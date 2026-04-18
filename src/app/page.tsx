@@ -152,32 +152,52 @@ export default function Home() {
         {/* initialCompletedIds is now fully hydrated from Supabase before mount */}
         <ProblemList userId={user.id} initialCompletedIds={initialCompletedIds} />
 
-        {/* ── Institutional / B2B Call to Action ──────────────────────────────── */}
-        <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-8 mt-16 max-w-4xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-6 shadow-[0_0_40px_-15px_rgba(16,185,129,0.1)] relative overflow-hidden">
-          {/* Subtle glow effect */}
-          <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/5 rounded-full blur-3xl pointer-events-none -translate-y-1/2 translate-x-1/3" />
+        {/* ── Unified Contact & Enterprise Footer ──────────────────────────────── */}
+        <section className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-7xl mx-auto py-12 mt-12 border-t border-zinc-800/50">
           
-          <div className="flex items-start md:items-center gap-5 z-10">
-            <div className="h-12 w-12 rounded-xl bg-zinc-950 border border-zinc-800 flex items-center justify-center flex-shrink-0 mt-1 md:mt-0">
+          {/* Card 1: For Institutions */}
+          <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-8 flex flex-col relative overflow-hidden group hover:border-zinc-700 transition-colors">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/5 rounded-full blur-3xl pointer-events-none -translate-y-1/2 translate-x-1/3" />
+            <div className="h-12 w-12 rounded-xl bg-zinc-950 border border-zinc-800 flex items-center justify-center flex-shrink-0 mb-6 z-10">
               <GraduationCap className="h-6 w-6 text-emerald-400" />
             </div>
-            <div>
-              <h3 className="text-xl font-bold text-white tracking-tight">For Colleges & Placement Cells</h3>
-              <p className="text-zinc-400 text-sm mt-1.5 max-w-lg leading-relaxed">
-                Want to track your entire 2026 batch? Get a personalized Institutional Dashboard with real-time DSA progress tracking and placement analytics for your students.
-              </p>
+            <h3 className="text-xl font-bold text-white mb-2 z-10">For Colleges & Placement Cells</h3>
+            <p className="text-zinc-400 text-sm mb-8 flex-grow leading-relaxed z-10">
+              Get a personalized Institutional Dashboard with real-time DSA progress tracking and placement analytics for your 2026 batch.
+            </p>
+            <div className="z-10">
+              <a
+                href="mailto:rameshkumaroff@gmail.com?subject=Institutional%20Dashboard%20Inquiry"
+                className="bg-white text-black hover:bg-zinc-200 px-6 py-2.5 rounded-lg font-medium inline-flex items-center transition-colors"
+              >
+                Request a Demo
+              </a>
             </div>
           </div>
-          
-          <div className="w-full md:w-auto flex-shrink-0 z-10 pt-2 md:pt-0">
-            <a
-              href="mailto:rameshkumaroff@gmail.com?subject=Institutional%20Dashboard%20Inquiry"
-              className="w-full md:w-auto inline-flex items-center justify-center bg-white text-black hover:bg-zinc-200 font-bold px-7 py-3 rounded-xl transition-all hover:scale-[1.02] active:scale-95 whitespace-nowrap"
-            >
-              Request a Demo
-            </a>
+
+          {/* Card 2: Contact Developer */}
+          <div className="bg-zinc-950 border border-zinc-800 rounded-xl p-8 flex flex-col group hover:border-zinc-700 transition-colors">
+            <div className="h-12 w-12 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center flex-shrink-0 mb-6">
+              <Code2 className="h-6 w-6 text-zinc-400 group-hover:text-amber-400 transition-colors" />
+            </div>
+            <h3 className="text-xl font-bold text-white mb-2">Contact the Developer</h3>
+            <p className="text-zinc-400 text-sm mb-8 flex-grow leading-relaxed">
+              Have a feature request, found a bug, or want to discuss AI and software development? Let&apos;s connect.
+            </p>
+            <div>
+              <a
+                href="https://linkedin.com/in/rameshkumark11"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-zinc-800 hover:bg-zinc-700 text-white px-6 py-2.5 rounded-lg font-medium inline-flex items-center gap-2 transition-colors"
+              >
+                <LinkedinIcon />
+                Connect on LinkedIn
+              </a>
+            </div>
           </div>
-        </div>
+
+        </section>
 
       </div>
     );
