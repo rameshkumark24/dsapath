@@ -115,6 +115,19 @@ export default function Home() {
     setTimeout(() => setHasCopied(false), 2000);
   };
 
+  const handleDemo = () => {
+    const gmailUrl = "https://mail.google.com/mail/?view=cm&fs=1&to=rameshkumaroff@gmail.com&su=Demo%20Request&body=Hi,%20I%20want%20a%20demo%20for%20my%20institution.";
+    const mailtoUrl = "mailto:rameshkumaroff@gmail.com?subject=Demo%20Request&body=Hi,%20I%20want%20a%20demo%20for%20my%20institution.";
+
+    // Try mailto first (works for configured local clients)
+    window.location.href = mailtoUrl;
+
+    // Fallback to Gmail Web UI in a new tab if no local client intercepts
+    setTimeout(() => {
+      window.open(gmailUrl, "_blank", "noopener,noreferrer");
+    }, 500);
+  };
+
   // ── Loading State (auth check) ─────────────────────────────────────────────
   if (isLoading) {
     return (
@@ -302,12 +315,12 @@ export default function Home() {
               Get a personalized Institutional Dashboard with real-time DSA progress tracking and placement analytics for your 2026 batch.
             </p>
             <div className="z-10">
-              <a
-                href="mailto:rameshkumaroff@gmail.com?subject=Demo%20Request&body=Hi,%20I%20want%20a%20demo%20for%20my%20institution."
+              <button
+                onClick={handleDemo}
                 className="bg-white text-black hover:bg-zinc-200 px-6 py-2.5 rounded-lg font-medium inline-flex items-center transition-colors"
               >
                 Request a Demo
-              </a>
+              </button>
               <p className="text-zinc-500 text-[10px] mt-2">Or email: rameshkumaroff@gmail.com</p>
             </div>
           </div>
