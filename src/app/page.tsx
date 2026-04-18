@@ -303,11 +303,14 @@ export default function Home() {
             </p>
             <div className="z-10">
               <a
-                href="mailto:rameshkumaroff@gmail.com?subject=Institutional%20Dashboard%20Inquiry"
+                href="mailto:rameshkumaroff@gmail.com?subject=Inquiry%20regarding%20Institutional%20Dashboard%20for%20[College%20Name]"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="bg-white text-black hover:bg-zinc-200 px-6 py-2.5 rounded-lg font-medium inline-flex items-center transition-colors"
               >
                 Request a Demo
               </a>
+              <p className="text-zinc-500 text-[10px] mt-2">Or email: rameshkumaroff@gmail.com</p>
             </div>
           </div>
 

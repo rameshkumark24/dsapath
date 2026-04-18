@@ -207,14 +207,14 @@ export default function DayBeforeInterview() {
         </section>
 
         {/* ── Motivational close ───────────────────────────────────────── */}
-        <div className="rounded-2xl border border-emerald-500/20 bg-emerald-500/5 p-7 text-center space-y-2">
-          <p className="text-xl font-black text-emerald-400">You&apos;ve done the work. Trust it. 🚀</p>
+        <div className="rounded-2xl border border-amber-500/20 bg-amber-500/5 p-7 text-center space-y-2">
+          <p className="text-xl font-black text-amber-500">You&apos;ve done the work. Trust it.</p>
           <p className="text-sm text-zinc-400 max-w-lg mx-auto">
             Sleep well, eat breakfast, and walk in knowing your prep was structured and intentional.
           </p>
           <Link
             href="/"
-            className="inline-flex items-center gap-2 mt-3 text-sm font-semibold text-emerald-500 hover:text-emerald-400 transition-colors"
+            className="inline-flex items-center gap-2 mt-3 text-sm font-semibold text-amber-500 hover:text-amber-400 transition-colors"
           >
             <ArrowLeft className="h-4 w-4" />
             Back to your Roadmap progress
