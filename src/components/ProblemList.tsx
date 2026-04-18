@@ -371,7 +371,9 @@ export default function ProblemList({ userId, initialCompletedIds = [] }: Proble
                             className="border-zinc-600 flex-shrink-0"
                           />
                           {problem.isEssential && (
-                            <Flame className="h-3.5 w-3.5 text-orange-400 fill-orange-400/30 flex-shrink-0" title="Must-Do" />
+                            <span title="Must-Do" className="flex-shrink-0">
+                              <Flame className="h-3.5 w-3.5 text-orange-400 fill-orange-400/30" />
+                            </span>
                           )}
                           <label
                             htmlFor={`cb-${problem.id}`}
