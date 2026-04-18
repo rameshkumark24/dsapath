@@ -112,7 +112,7 @@ function VideoPlaceholder() {
 export default function DayBeforeInterview() {
   return (
     <div className="min-h-screen bg-zinc-950 text-zinc-100">
-      <div className="max-w-3xl mx-auto px-6 py-12 w-full space-y-0">
+      <div className="max-w-5xl mx-auto px-6 py-12 w-full">
 
         {/* ── Back link ────────────────────────────────────────────────── */}
         <div className="mb-10">
@@ -131,19 +131,19 @@ export default function DayBeforeInterview() {
             <Zap className="h-3.5 w-3.5 fill-amber-400/30" />
             Last-Minute Revision
           </div>
-          <h1 className="text-4xl sm:text-5xl font-black tracking-tighter text-zinc-100 leading-tight">
+          <h1 className="text-4xl sm:text-5xl font-black tracking-tighter text-zinc-100 leading-tight text-balance">
             Day Before Interview{" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-500">
               Crash Course
             </span>
           </h1>
-          <p className="text-zinc-400 text-base max-w-2xl leading-relaxed">
+          <p className="text-zinc-400 text-base max-w-2xl leading-relaxed mt-4 mb-8">
             Don&apos;t learn anything new tonight. Consolidate patterns, recall OOPs, and walk in confident.
           </p>
+        </div>
 
-          {/* ── Solid Red Subscribe CTA ─────────────────────────────────── */}
-          </div>
-          <div className="mt-6">
+        {/* ── Solid Red Subscribe CTA ─────────────────────────────────── */}
+        <div className="mb-16">
           <a
             href="https://www.youtube.com/@Simplifywithrk"
             target="_blank"
@@ -153,11 +153,11 @@ export default function DayBeforeInterview() {
             <YoutubeIcon />
             Subscribe to Simplifywithrk
           </a>
-          </div>
+        </div>
 
         {/* ── SDE Revision Checklist ───────────────────────────────────── */}
         <section className="space-y-4 mt-12">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 mb-4">
             <CheckCircle2 className="h-6 w-6 text-emerald-500 flex-shrink-0" />
             <h2 className="text-2xl font-bold tracking-tight">SDE Revision Checklist</h2>
           </div>
