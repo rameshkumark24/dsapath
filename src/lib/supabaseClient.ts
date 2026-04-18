@@ -14,15 +14,16 @@ if (!supabaseUrl || !supabaseAnonKey) {
 }
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+
 /**
  * Initiates the Google OAuth sign-in process.
+ * Redirects back to the home page (/) after a successful login.
  */
 export const signInWithGoogle = async () => {
     const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-            // Redirect back to the application after successful login
-            redirectTo: `${typeof window !== 'undefined' ? window.location.origin : ''}/auth/callback`,
+            redirectTo: `${typeof window !== 'undefined' ? window.location.origin : ''}/`,
         },
     });
 
