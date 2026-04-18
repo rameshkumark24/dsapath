@@ -15,12 +15,12 @@ import {
 
 // ── YouTube brand icon (inline SVG) ───────────────────────────────────────
 const YoutubeIcon = () => (
-  <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+  <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
     <path d="M22.54 6.42a2.78 2.78 0 00-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46A2.78 2.78 0 001.46 6.42 29 29 0 001 12a29 29 0 00.46 5.58a2.78 2.78 0 001.95 1.96C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 001.95-1.96A29 29 0 0023 12a29 29 0 00-.46-5.58zM9.75 15.02V8.98L15.5 12l-5.75 3.02z" />
   </svg>
 );
 
-// ── Checklist data — concept + explanation separated for clear hierarchy ───
+// ── Checklist data ─────────────────────────────────────────────────────────
 const checklistSections = [
   {
     icon: User,
@@ -91,17 +91,29 @@ const checklistSections = [
 
 // ── Color map ─────────────────────────────────────────────────────────────
 const colorMap: Record<string, { border: string; icon: string; badge: string; headerBg: string }> = {
-  emerald: { border: "border-emerald-500/20", icon: "text-emerald-400", badge: "text-emerald-500/60", headerBg: "bg-emerald-500/5" },
-  indigo:  { border: "border-indigo-500/20",  icon: "text-indigo-400",  badge: "text-indigo-500/60",  headerBg: "bg-indigo-500/5"  },
-  teal:    { border: "border-teal-500/20",    icon: "text-teal-400",    badge: "text-teal-500/60",    headerBg: "bg-teal-500/5"    },
-  amber:   { border: "border-amber-500/20",   icon: "text-amber-400",   badge: "text-amber-500/60",   headerBg: "bg-amber-500/5"   },
-  rose:    { border: "border-rose-500/20",    icon: "text-rose-400",    badge: "text-rose-500/60",    headerBg: "bg-rose-500/5"    },
+  emerald: { border: "border-emerald-500/20", icon: "text-emerald-400", badge: "text-emerald-500/50", headerBg: "bg-emerald-500/5"  },
+  indigo:  { border: "border-indigo-500/20",  icon: "text-indigo-400",  badge: "text-indigo-500/50",  headerBg: "bg-indigo-500/5"   },
+  teal:    { border: "border-teal-500/20",    icon: "text-teal-400",    badge: "text-teal-500/50",    headerBg: "bg-teal-500/5"     },
+  amber:   { border: "border-amber-500/20",   icon: "text-amber-400",   badge: "text-amber-500/50",   headerBg: "bg-amber-500/5"    },
+  rose:    { border: "border-rose-500/20",    icon: "text-rose-400",    badge: "text-rose-500/50",    headerBg: "bg-rose-500/5"     },
 };
+
+// ── In-card Video Placeholder ──────────────────────────────────────────────
+function VideoPlaceholder() {
+  return (
+    <div className="w-full aspect-video bg-zinc-950 rounded-lg border border-zinc-800/50 flex flex-col items-center justify-center text-center p-4 mb-6 relative overflow-hidden">
+      {/* Subtle ambient glow */}
+      <div className="absolute inset-0 bg-gradient-to-br from-zinc-900/40 to-transparent pointer-events-none" />
+      <PlayCircle className="h-10 w-10 text-zinc-600 opacity-50 mb-3" />
+      <p className="text-sm font-medium text-zinc-500">Topic Video Dropping Soon</p>
+    </div>
+  );
+}
 
 export default function DayBeforeInterview() {
   return (
     <div className="min-h-screen w-full bg-zinc-950 text-zinc-100">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
 
         {/* ── Back link ────────────────────────────────────────────────── */}
         <Link
@@ -128,45 +140,20 @@ export default function DayBeforeInterview() {
             Master your intro, nail OOPs, and conquer Java Collections.
             Don&apos;t learn anything new tonight — consolidate and walk in confident.
           </p>
-        </div>
 
-        {/* ── Video Section ────────────────────────────────────────────── */}
-        <section className="space-y-5">
-          <h2 className="text-xl font-bold text-zinc-200 flex items-center gap-2">
-            <span className="h-1 w-5 rounded-full bg-amber-500 inline-block" />
-            Watch Before You Sleep
-          </h2>
-
-          {/* Coming Soon Placeholder */}
-          <div className="w-full aspect-video bg-zinc-900 rounded-2xl border border-zinc-800 flex flex-col items-center justify-center text-center p-6 shadow-[0_0_40px_-15px_rgba(245,158,11,0.15)]">
-            <div className="animate-pulse mb-5">
-              <PlayCircle className="h-16 w-16 text-zinc-700" />
-            </div>
-            <p className="text-base sm:text-lg font-semibold text-white">
-              Exclusive Prep Video Dropping Soon
-            </p>
-            <p className="mt-2 text-sm text-zinc-400 max-w-xs">
-              Subscribe to the channel so you don&apos;t miss it.
-            </p>
-          </div>
-
-          {/* Subscribe CTA */}
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 rounded-2xl border border-zinc-800 bg-zinc-900/60 px-6 py-4">
-            <div>
-              <p className="font-semibold text-zinc-200 text-sm">More placement walkthroughs every week</p>
-              <p className="text-xs text-zinc-500 mt-0.5">Java, DSA, system design, and HR tips — all free.</p>
-            </div>
-            <a
-              href="https://www.youtube.com/@Simplifywithrk"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2.5 rounded-xl bg-red-600 hover:bg-red-500 px-6 py-3 text-sm font-bold text-white transition-all shadow-lg shadow-red-900/30 hover:-translate-y-px flex-shrink-0"
-            >
+          {/* ── Sleek Subscribe button ──────────────────────────────────── */}
+          <a
+            href="https://www.youtube.com/@Simplifywithrk"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 rounded-xl border border-zinc-700 bg-zinc-900 hover:border-zinc-600 hover:bg-zinc-800 px-4 py-2.5 text-sm font-medium text-zinc-300 transition-all duration-200"
+          >
+            <span className="text-red-500">
               <YoutubeIcon />
-              Subscribe to Simplifywithrk
-            </a>
-          </div>
-        </section>
+            </span>
+            Subscribe to Simplifywithrk
+          </a>
+        </div>
 
         {/* ── SDE Revision Checklist ───────────────────────────────────── */}
         <section className="space-y-5">
@@ -175,7 +162,7 @@ export default function DayBeforeInterview() {
             <h2 className="text-2xl font-bold tracking-tight">SDE Revision Checklist</h2>
           </div>
           <p className="text-sm text-zinc-500">
-            Read each concept and mentally trace through it. If you blank on one — that&apos;s your 5-minute review target.
+            A dedicated video is coming for every topic below. Read each concept and mentally trace through it before you sleep.
           </p>
 
           <div className="space-y-4">
@@ -197,14 +184,21 @@ export default function DayBeforeInterview() {
                     </div>
                   </div>
 
-                  {/* Concept + explanation pairs */}
-                  <div className="px-6 py-5 flex flex-col gap-5">
-                    {points.map(({ concept, explanation }, i) => (
-                      <div key={i} className="flex flex-col gap-1">
-                        <p className="text-white font-medium text-sm">{concept}</p>
-                        <p className="text-zinc-400 text-sm leading-relaxed">{explanation}</p>
-                      </div>
-                    ))}
+                  {/* Card body: video placeholder → concept list */}
+                  <div className="px-6 pt-5 pb-6">
+
+                    {/* In-card video placeholder */}
+                    <VideoPlaceholder />
+
+                    {/* Concept + explanation pairs */}
+                    <div className="flex flex-col gap-5">
+                      {points.map(({ concept, explanation }, i) => (
+                        <div key={i} className="flex flex-col gap-1">
+                          <p className="text-white font-medium text-sm">{concept}</p>
+                          <p className="text-zinc-400 text-sm leading-relaxed">{explanation}</p>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </div>
               );
