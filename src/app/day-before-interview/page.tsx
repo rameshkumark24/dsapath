@@ -1,10 +1,10 @@
 "use client";
 
-// src/app/day-before-interview/page.tsx
 import Link from "next/link";
 import {
   ArrowLeft,
   Zap,
+  PlayCircle,
   User,
   Box,
   Database,
@@ -13,14 +13,14 @@ import {
   CheckCircle2,
 } from "lucide-react";
 
-// ── YouTube brand icon (inline SVG — not in all lucide versions) ──────────
+// ── YouTube brand icon (inline SVG) ───────────────────────────────────────
 const YoutubeIcon = () => (
   <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
     <path d="M22.54 6.42a2.78 2.78 0 00-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46A2.78 2.78 0 001.46 6.42 29 29 0 001 12a29 29 0 00.46 5.58a2.78 2.78 0 001.95 1.96C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 001.95-1.96A29 29 0 0023 12a29 29 0 00-.46-5.58zM9.75 15.02V8.98L15.5 12l-5.75 3.02z" />
   </svg>
 );
 
-// ── Checklist data ─────────────────────────────────────────────────────────
+// ── Checklist data — concept + explanation separated for clear hierarchy ───
 const checklistSections = [
   {
     icon: User,
@@ -28,11 +28,11 @@ const checklistSections = [
     title: "The Perfect Self-Introduction",
     color: "emerald",
     points: [
-      "Who you are: Name, college, degree, and graduation year.",
-      "Your tech stack: Java (primary), React, SQL — frame it confidently.",
-      'Your best project: One-liner impact statement. "Built X that does Y, resulting in Z."',
-      "Why this role: Align your skills with the company's domain (product vs service).",
-      "Close strong: End with enthusiasm — 'I'm excited to bring my skills to your team.'",
+      { concept: "Who you are", explanation: "Name, college, degree, and graduation year — keep it under 15 seconds." },
+      { concept: "Your tech stack", explanation: "Java (primary), React, SQL — frame it with confidence, not hesitation." },
+      { concept: "Your best project", explanation: 'One-liner impact: "Built X that does Y, resulting in Z." Memorise this cold.' },
+      { concept: "Why this role", explanation: "Align your skills with the company's domain — product vs service mindset matters." },
+      { concept: "Strong close", explanation: "'I'm excited to contribute my skills to your team.' — End with energy, not a question mark." },
     ],
   },
   {
@@ -41,11 +41,11 @@ const checklistSections = [
     title: "OOPs Principles — Real-World Examples",
     color: "indigo",
     points: [
-      "Abstraction: Hide complexity. ATM machine — you use it without knowing internals.",
-      "Encapsulation: Bundle data + methods. Bank account — balance is private, accessed via methods.",
-      "Polymorphism: One interface, many forms. Overloading = same name, diff params (compile-time). Overriding = subclass redefines parent method (run-time).",
-      "Inheritance: IS-A relationship. Dog extends Animal — reuse + extend parent behavior.",
-      "Pro tip: Always give ONE crisp real-world analogy per principle.",
+      { concept: "Abstraction", explanation: "Hide complexity. ATM machine — you use it without knowing the internals." },
+      { concept: "Encapsulation", explanation: "Bundle data + methods. Bank account — balance is private, accessed only via methods." },
+      { concept: "Polymorphism", explanation: "Overloading = same name, different params (compile-time). Overriding = subclass redefines parent method (run-time)." },
+      { concept: "Inheritance", explanation: "IS-A relationship. Dog extends Animal — reuse and extend parent behaviour." },
+      { concept: "Interview tip", explanation: "Always give ONE crisp real-world analogy per principle. Interviewers love concrete examples." },
     ],
   },
   {
@@ -54,11 +54,11 @@ const checklistSections = [
     title: "Java Collections Framework",
     color: "teal",
     points: [
-      "HashMap: O(1) average get/put. Not thread-safe. Allows one null key.",
-      "ConcurrentHashMap: Thread-safe. Segment-level locking. No null keys/values.",
-      "ArrayList vs LinkedList: ArrayList = contiguous memory, fast random access (O(1)). LinkedList = fast insert/delete at ends (O(1)), slow traversal.",
-      "HashSet: Unique elements, O(1) ops. LinkedHashSet keeps insertion order. TreeSet is sorted O(log n).",
-      "PriorityQueue: Min-heap by default. Use Collections.reverseOrder() for max-heap.",
+      { concept: "HashMap", explanation: "O(1) average get/put. Not thread-safe. Allows one null key." },
+      { concept: "ConcurrentHashMap", explanation: "Thread-safe with segment-level locking. No null keys or values allowed." },
+      { concept: "ArrayList vs LinkedList", explanation: "ArrayList = contiguous memory, fast random access O(1). LinkedList = fast insert/delete at ends, slow traversal." },
+      { concept: "Set implementations", explanation: "HashSet: unique, O(1). LinkedHashSet: insertion order. TreeSet: sorted, O(log n)." },
+      { concept: "PriorityQueue", explanation: "Min-heap by default. Use Collections.reverseOrder() for max-heap." },
     ],
   },
   {
@@ -67,11 +67,11 @@ const checklistSections = [
     title: "Core Java Must-Knows",
     color: "amber",
     points: [
-      "String vs StringBuilder: String is immutable (new object on change). StringBuilder is mutable — use in loops.",
-      "Multithreading basics: Thread lifecycle (New → Runnable → Running → Blocked → Dead). synchronized keyword prevents race conditions.",
-      "Garbage Collection: JVM handles it. Objects eligible when no live references. finalize() is deprecated — rely on try-with-resources.",
-      "equals() vs ==: == compares references. equals() compares content (if overridden).",
-      "final / finally / finalize: Keyword vs exception block vs GC method — know the difference cold.",
+      { concept: "String vs StringBuilder", explanation: "String is immutable — creates a new object on every change. Use StringBuilder in loops." },
+      { concept: "Multithreading basics", explanation: "Thread lifecycle: New → Runnable → Running → Blocked → Dead. synchronized prevents race conditions." },
+      { concept: "Garbage Collection", explanation: "JVM manages it automatically. Objects become eligible when no live references exist." },
+      { concept: "equals() vs ==", explanation: "== compares references. equals() compares content (only if overridden)." },
+      { concept: "final / finally / finalize", explanation: "Keyword (immutability) vs exception block (always runs) vs GC method (deprecated). Know the difference cold." },
     ],
   },
   {
@@ -80,22 +80,22 @@ const checklistSections = [
     title: "High-Yield DSA Patterns",
     color: "rose",
     points: [
-      "Two Pointers: Left + right converging on sorted array. Fast + slow for cycle detection.",
-      "Sliding Window: Expand right, shrink left. Trigger to shrink = your constraint violation.",
-      "BFS: Level-order traversal, shortest path in unweighted graph. Queue-based.",
-      "DFS: Explore deep first. Recursion or explicit stack. Good for connected components, paths.",
-      "Binary Search on Answers: If search space is monotonic and you can write a feasibility check — use binary search.",
+      { concept: "Two Pointers", explanation: "Left + right converging on a sorted array. Fast + slow pointer for cycle detection in linked lists." },
+      { concept: "Sliding Window", explanation: "Expand right, shrink left. Your trigger to shrink = the constraint violation condition." },
+      { concept: "BFS", explanation: "Level-order traversal and shortest path in unweighted graphs. Always queue-based." },
+      { concept: "DFS", explanation: "Explore deep first. Use recursion or an explicit stack. Best for connected components and path finding." },
+      { concept: "Binary Search on Answers", explanation: "If the search space is monotonic and you can write a feasibility check — binary search is the answer." },
     ],
   },
 ];
 
 // ── Color map ─────────────────────────────────────────────────────────────
-const colorMap: Record<string, { bg: string; border: string; icon: string; badge: string }> = {
-  emerald: { bg: "bg-emerald-500/10", border: "border-emerald-500/20", icon: "text-emerald-400", badge: "text-emerald-500" },
-  indigo:  { bg: "bg-indigo-500/10",  border: "border-indigo-500/20",  icon: "text-indigo-400",  badge: "text-indigo-500"  },
-  teal:    { bg: "bg-teal-500/10",    border: "border-teal-500/20",    icon: "text-teal-400",    badge: "text-teal-500"    },
-  amber:   { bg: "bg-amber-500/10",   border: "border-amber-500/20",   icon: "text-amber-400",   badge: "text-amber-500"   },
-  rose:    { bg: "bg-rose-500/10",    border: "border-rose-500/20",    icon: "text-rose-400",    badge: "text-rose-500"    },
+const colorMap: Record<string, { border: string; icon: string; badge: string; headerBg: string }> = {
+  emerald: { border: "border-emerald-500/20", icon: "text-emerald-400", badge: "text-emerald-500/60", headerBg: "bg-emerald-500/5" },
+  indigo:  { border: "border-indigo-500/20",  icon: "text-indigo-400",  badge: "text-indigo-500/60",  headerBg: "bg-indigo-500/5"  },
+  teal:    { border: "border-teal-500/20",    icon: "text-teal-400",    badge: "text-teal-500/60",    headerBg: "bg-teal-500/5"    },
+  amber:   { border: "border-amber-500/20",   icon: "text-amber-400",   badge: "text-amber-500/60",   headerBg: "bg-amber-500/5"   },
+  rose:    { border: "border-rose-500/20",    icon: "text-rose-400",    badge: "text-rose-500/60",    headerBg: "bg-rose-500/5"    },
 };
 
 export default function DayBeforeInterview() {
@@ -126,7 +126,7 @@ export default function DayBeforeInterview() {
           </h1>
           <p className="text-zinc-400 text-base sm:text-lg max-w-2xl leading-relaxed">
             Master your intro, nail OOPs, and conquer Java Collections.
-            Don't learn anything new tonight — consolidate and walk in confident.
+            Don&apos;t learn anything new tonight — consolidate and walk in confident.
           </p>
         </div>
 
@@ -137,18 +137,17 @@ export default function DayBeforeInterview() {
             Watch Before You Sleep
           </h2>
 
-          {/* 16:9 responsive embed container */}
-          <div
-            className="relative w-full rounded-2xl overflow-hidden border border-zinc-700 shadow-[0_0_40px_-10px_rgba(245,158,11,0.2)] bg-zinc-900"
-            style={{ paddingTop: "56.25%" }}
-          >
-            <iframe
-              className="absolute inset-0 w-full h-full"
-              src="https://www.youtube.com/embed/dQw4w9WgXcQ"
-              title="Day Before Interview Prep — Simplify with RK"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              allowFullScreen
-            />
+          {/* Coming Soon Placeholder */}
+          <div className="w-full aspect-video bg-zinc-900 rounded-2xl border border-zinc-800 flex flex-col items-center justify-center text-center p-6 shadow-[0_0_40px_-15px_rgba(245,158,11,0.15)]">
+            <div className="animate-pulse mb-5">
+              <PlayCircle className="h-16 w-16 text-zinc-700" />
+            </div>
+            <p className="text-base sm:text-lg font-semibold text-white">
+              Exclusive Prep Video Dropping Soon
+            </p>
+            <p className="mt-2 text-sm text-zinc-400 max-w-xs">
+              Subscribe to the channel so you don&apos;t miss it.
+            </p>
           </div>
 
           {/* Subscribe CTA */}
@@ -161,7 +160,7 @@ export default function DayBeforeInterview() {
               href="https://www.youtube.com/@Simplifywithrk"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2.5 rounded-xl bg-red-600 hover:bg-red-500 px-6 py-3 text-sm font-bold text-white transition-all shadow-lg shadow-red-900/30 hover:shadow-red-900/50 hover:-translate-y-px flex-shrink-0"
+              className="inline-flex items-center justify-center gap-2.5 rounded-xl bg-red-600 hover:bg-red-500 px-6 py-3 text-sm font-bold text-white transition-all shadow-lg shadow-red-900/30 hover:-translate-y-px flex-shrink-0"
             >
               <YoutubeIcon />
               Subscribe to Simplifywithrk
@@ -176,7 +175,7 @@ export default function DayBeforeInterview() {
             <h2 className="text-2xl font-bold tracking-tight">SDE Revision Checklist</h2>
           </div>
           <p className="text-sm text-zinc-500">
-            Read each point and mentally trace through it. If you blank on one — that's your 5-minute review target.
+            Read each concept and mentally trace through it. If you blank on one — that&apos;s your 5-minute review target.
           </p>
 
           <div className="space-y-4">
@@ -188,26 +187,25 @@ export default function DayBeforeInterview() {
                   className={`rounded-2xl border ${c.border} bg-zinc-900/50 overflow-hidden`}
                 >
                   {/* Card header */}
-                  <div className={`flex items-center gap-4 px-6 py-4 border-b ${c.border} ${c.bg}`}>
-                    <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${c.bg} border ${c.border} flex-shrink-0`}>
+                  <div className={`flex items-center gap-4 px-6 py-4 border-b ${c.border} ${c.headerBg}`}>
+                    <div className={`flex h-10 w-10 items-center justify-center rounded-xl bg-zinc-800/80 border ${c.border} flex-shrink-0`}>
                       <Icon className={`h-5 w-5 ${c.icon}`} />
                     </div>
                     <div className="flex items-center gap-3 min-w-0">
-                      <span className={`text-xs font-black tracking-widest opacity-60 ${c.badge} flex-shrink-0`}>{number}</span>
+                      <span className={`text-xs font-black tracking-widest ${c.badge} flex-shrink-0`}>{number}</span>
                       <h3 className="font-bold text-zinc-100 text-sm sm:text-base">{title}</h3>
                     </div>
                   </div>
 
-                  {/* Bullet points */}
-                  <ul className="px-6 py-4 space-y-2.5">
-                    {points.map((point, i) => (
-                      <li key={i} className="flex items-start gap-3 text-sm text-zinc-400 leading-relaxed">
-                        <span className={`mt-1.5 h-1.5 w-1.5 rounded-full flex-shrink-0 ${c.icon} opacity-70`}
-                              style={{ background: "currentColor" }} />
-                        {point}
-                      </li>
+                  {/* Concept + explanation pairs */}
+                  <div className="px-6 py-5 flex flex-col gap-5">
+                    {points.map(({ concept, explanation }, i) => (
+                      <div key={i} className="flex flex-col gap-1">
+                        <p className="text-white font-medium text-sm">{concept}</p>
+                        <p className="text-zinc-400 text-sm leading-relaxed">{explanation}</p>
+                      </div>
                     ))}
-                  </ul>
+                  </div>
                 </div>
               );
             })}
@@ -216,10 +214,10 @@ export default function DayBeforeInterview() {
 
         {/* ── Motivational close ───────────────────────────────────────── */}
         <div className="rounded-2xl border border-emerald-500/20 bg-emerald-500/5 p-8 text-center space-y-3">
-          <p className="text-2xl font-black text-emerald-400">You've done the work. Trust it. 🚀</p>
+          <p className="text-2xl font-black text-emerald-400">You&apos;ve done the work. Trust it. 🚀</p>
           <p className="text-sm text-zinc-400 max-w-lg mx-auto">
             Sleep well, eat a proper breakfast, and walk into that drive knowing
-            your preparation was intentional and structured. You've got this.
+            your preparation was intentional and structured. You&apos;ve got this.
           </p>
           <Link
             href="/"
