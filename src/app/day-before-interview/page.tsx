@@ -111,10 +111,11 @@ function VideoPlaceholder() {
 
 export default function DayBeforeInterview() {
   return (
-    <div className="min-h-screen w-full bg-zinc-950 text-zinc-100">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
+    <div className="min-h-screen bg-zinc-950 text-zinc-100">
+      <div className="max-w-3xl mx-auto px-6 py-12 w-full space-y-0">
 
         {/* ── Back link ────────────────────────────────────────────────── */}
+        <div className="mb-10">
         <Link
           href="/"
           className="inline-flex items-center gap-2 text-sm text-zinc-500 hover:text-emerald-400 transition-colors group"
@@ -122,6 +123,7 @@ export default function DayBeforeInterview() {
           <ArrowLeft className="h-4 w-4 transition-transform duration-200 group-hover:-translate-x-1" />
           Back to Roadmap
         </Link>
+        </div>
 
         {/* ── Page Header ──────────────────────────────────────────────── */}
         <div className="space-y-4">
@@ -140,6 +142,8 @@ export default function DayBeforeInterview() {
           </p>
 
           {/* ── Solid Red Subscribe CTA ─────────────────────────────────── */}
+          </div>
+          <div className="mt-6">
           <a
             href="https://www.youtube.com/@Simplifywithrk"
             target="_blank"
@@ -149,10 +153,10 @@ export default function DayBeforeInterview() {
             <YoutubeIcon />
             Subscribe to Simplifywithrk
           </a>
-        </div>
+          </div>
 
         {/* ── SDE Revision Checklist ───────────────────────────────────── */}
-        <section className="space-y-4">
+        <section className="space-y-4 mt-12">
           <div className="flex items-center gap-3">
             <CheckCircle2 className="h-6 w-6 text-emerald-500 flex-shrink-0" />
             <h2 className="text-2xl font-bold tracking-tight">SDE Revision Checklist</h2>
