@@ -11,6 +11,7 @@ import {
   ChevronDown,
   Trophy,
   ExternalLink,
+  Flame,
 } from "lucide-react";
 
 // ── Types ──────────────────────────────────────────────────────────────────
@@ -30,7 +31,8 @@ const DIFFICULTY_STYLES: Record<Difficulty, string> = {
 };
 
 const ALL_TOPICS = ["All Topics", ...roadmapData.map((m) => m.title)];
-const TOTAL_PROBLEMS = roadmapData.reduce((acc, m) => acc + m.problems.length, 0);
+// Note: TOTAL_PROBLEMS is a static constant; dynamic totals based on filters
+// are computed inline via useMemo inside the component.
 
 // ── Circular Progress Ring ─────────────────────────────────────────────────
 function CircularProgress({ pct }: { pct: number }) {
@@ -84,18 +86,32 @@ export default function ProblemList({ userId, initialCompletedIds = [] }: Proble
   const [statusFilter, setStatusFilter]     = useState<StatusFilter>("All");
   const [diffFilter, setDiffFilter]         = useState<DifficultyFilter>("All");
   const [topicFilter, setTopicFilter]       = useState("All Topics");
+  const [mustDoOnly, setMustDoOnly]         = useState(false);
 
   // ── Derived stats (useMemo = no unnecessary recalculations) ───────────────
   const totalSolved = useMemo(() => completed.size, [completed]);
 
+  // Total problem count — recalculates when mustDoOnly changes
+  const totalProblems = useMemo(() =>
+    roadmapData.reduce((acc, m) => {
+      const probs = mustDoOnly ? m.problems.filter((p) => p.isEssential) : m.problems;
+      return acc + probs.length;
+    }, 0),
+    [mustDoOnly]
+  );
+
+  // Topic bars — counts essential-only when mustDoOnly is active
   const topicStats = useMemo(() =>
-    roadmapData.map((m) => ({
-      id:     m.id,
-      title:  m.title,
-      total:  m.problems.length,
-      solved: m.problems.filter((p) => completed.has(p.id)).length,
-    })),
-    [completed]
+    roadmapData.map((m) => {
+      const probs = mustDoOnly ? m.problems.filter((p) => p.isEssential) : m.problems;
+      return {
+        id:     m.id,
+        title:  m.title,
+        total:  probs.length,
+        solved: probs.filter((p) => completed.has(p.id)).length,
+      };
+    }).filter((t) => t.total > 0), // hide topics with 0 essential problems in must-do mode
+    [completed, mustDoOnly]
   );
 
   // Flat filtered list — never mutates source data
@@ -105,17 +121,18 @@ export default function ProblemList({ userId, initialCompletedIds = [] }: Proble
       .map((m) => ({
         ...m,
         problems: m.problems.filter((p) => {
+          const essentialMatch = !mustDoOnly || p.isEssential === true;
           const solvedMatch =
             statusFilter === "All" ||
             (statusFilter === "Solved" && completed.has(p.id)) ||
             (statusFilter === "Unsolved" && !completed.has(p.id));
           const diffMatch =
             diffFilter === "All" || p.difficulty === diffFilter;
-          return solvedMatch && diffMatch;
+          return essentialMatch && solvedMatch && diffMatch;
         }),
       }))
       .filter((m) => m.problems.length > 0);
-  }, [statusFilter, diffFilter, topicFilter, completed]);
+  }, [statusFilter, diffFilter, topicFilter, mustDoOnly, completed]);
 
   // ── Toggle problem (optimistic UI + Supabase sync) ─────────────────────
   const toggleProblem = useCallback(
@@ -165,8 +182,8 @@ export default function ProblemList({ userId, initialCompletedIds = [] }: Proble
     [userId]
   );
 
-  const overallPct = TOTAL_PROBLEMS > 0
-    ? Math.round((totalSolved / TOTAL_PROBLEMS) * 100)
+  const overallPct = totalProblems > 0
+    ? Math.round((totalSolved / totalProblems) * 100)
     : 0;
 
   return (
@@ -206,7 +223,7 @@ export default function ProblemList({ userId, initialCompletedIds = [] }: Proble
               <Trophy className="h-4 w-4 text-amber-400" />
               <span className="text-sm font-semibold text-zinc-200">
                 {totalSolved}
-                <span className="text-zinc-500 font-normal"> / {TOTAL_PROBLEMS} solved</span>
+                <span className="text-zinc-500 font-normal"> / {totalProblems} solved</span>
               </span>
             </div>
           </div>
@@ -279,10 +296,23 @@ export default function ProblemList({ userId, initialCompletedIds = [] }: Proble
           <ChevronDown className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500" />
         </div>
 
+        {/* Must-Do Only toggle */}
+        <button
+          onClick={() => setMustDoOnly((v) => !v)}
+          className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl border text-sm font-semibold transition-all duration-200 ${
+            mustDoOnly
+              ? "bg-orange-500/20 border-orange-500/50 text-orange-400 shadow shadow-orange-900/20"
+              : "border-zinc-800 bg-zinc-900 text-zinc-400 hover:text-zinc-200 hover:border-zinc-700"
+          }`}
+        >
+          <Flame className={`h-4 w-4 transition-colors ${ mustDoOnly ? "fill-orange-500/30 text-orange-400" : "text-zinc-600" }`} />
+          Must-Do Only
+        </button>
+
         {/* Active filter count badge */}
-        {(statusFilter !== "All" || diffFilter !== "All" || topicFilter !== "All Topics") && (
+        {(statusFilter !== "All" || diffFilter !== "All" || topicFilter !== "All Topics" || mustDoOnly) && (
           <button
-            onClick={() => { setStatusFilter("All"); setDiffFilter("All"); setTopicFilter("All Topics"); }}
+            onClick={() => { setStatusFilter("All"); setDiffFilter("All"); setTopicFilter("All Topics"); setMustDoOnly(false); }}
             className="text-xs text-zinc-500 hover:text-zinc-300 underline underline-offset-2 transition-colors"
           >
             Clear filters
@@ -340,6 +370,9 @@ export default function ProblemList({ userId, initialCompletedIds = [] }: Proble
                             onCheckedChange={(checked) => toggleProblem(problem.id, Boolean(checked))}
                             className="border-zinc-600 flex-shrink-0"
                           />
+                          {problem.isEssential && (
+                            <Flame className="h-3.5 w-3.5 text-orange-400 fill-orange-400/30 flex-shrink-0" title="Must-Do" />
+                          )}
                           <label
                             htmlFor={`cb-${problem.id}`}
                             className={`text-sm font-medium cursor-pointer truncate transition-colors ${

@@ -8,6 +8,7 @@ export interface Problem {
   difficulty: Difficulty;
   leetcodeUrl: string;
   affiliateLink?: string;
+  isEssential?: boolean;  // 🔥 High-yield must-do problems
 }
 
 export interface Module {
@@ -21,7 +22,7 @@ export const roadmapData: Module[] = [
     id: "arrays-and-hashing",
     title: "Arrays & Hashing",
     problems: [
-      { id: "two-sum", title: "Two Sum", difficulty: "Easy", leetcodeUrl: "https://leetcode.com/problems/two-sum/", affiliateLink: "https://amazon.in/dp/0984782869" },
+      { id: "two-sum", title: "Two Sum", difficulty: "Easy", leetcodeUrl: "https://leetcode.com/problems/two-sum/", affiliateLink: "https://amazon.in/dp/0984782869", isEssential: true },
       { id: "contains-duplicate", title: "Contains Duplicate", difficulty: "Easy", leetcodeUrl: "https://leetcode.com/problems/contains-duplicate/" },
       { id: "valid-anagram", title: "Valid Anagram", difficulty: "Easy", leetcodeUrl: "https://leetcode.com/problems/valid-anagram/" },
       { id: "majority-element", title: "Majority Element", difficulty: "Easy", leetcodeUrl: "https://leetcode.com/problems/majority-element/" },
@@ -30,8 +31,8 @@ export const roadmapData: Module[] = [
       { id: "remove-duplicates-sorted-array", title: "Remove Duplicates from Sorted Array", difficulty: "Easy", leetcodeUrl: "https://leetcode.com/problems/remove-duplicates-from-sorted-array/" },
       { id: "move-zeroes", title: "Move Zeroes", difficulty: "Easy", leetcodeUrl: "https://leetcode.com/problems/move-zeroes/" },
       { id: "missing-number", title: "Missing Number", difficulty: "Easy", leetcodeUrl: "https://leetcode.com/problems/missing-number/" },
-      { id: "maximum-subarray", title: "Maximum Subarray", difficulty: "Easy", leetcodeUrl: "https://leetcode.com/problems/maximum-subarray/" },
-      { id: "best-time-to-buy-and-sell-stock", title: "Best Time to Buy and Sell Stock", difficulty: "Easy", leetcodeUrl: "https://leetcode.com/problems/best-time-to-buy-and-sell-stock/", affiliateLink: "https://example.com/affiliate/keyboard" },
+      { id: "maximum-subarray", title: "Maximum Subarray", difficulty: "Easy", leetcodeUrl: "https://leetcode.com/problems/maximum-subarray/", isEssential: true },
+      { id: "best-time-to-buy-and-sell-stock", title: "Best Time to Buy and Sell Stock", difficulty: "Easy", leetcodeUrl: "https://leetcode.com/problems/best-time-to-buy-and-sell-stock/", affiliateLink: "https://example.com/affiliate/keyboard", isEssential: true },
       { id: "squares-of-a-sorted-array", title: "Squares of a Sorted Array", difficulty: "Easy", leetcodeUrl: "https://leetcode.com/problems/squares-of-a-sorted-array/" },
       { id: "monotonic-array", title: "Monotonic Array", difficulty: "Easy", leetcodeUrl: "https://leetcode.com/problems/monotonic-array/" },
       { id: "third-maximum-number", title: "Third Maximum Number", difficulty: "Easy", leetcodeUrl: "https://leetcode.com/problems/third-maximum-number/" },
@@ -47,7 +48,7 @@ export const roadmapData: Module[] = [
       { id: "sort-colors", title: "Sort Colors", difficulty: "Medium", leetcodeUrl: "https://leetcode.com/problems/sort-colors/" },
       { id: "find-all-duplicates-in-an-array", title: "Find All Duplicates in an Array", difficulty: "Medium", leetcodeUrl: "https://leetcode.com/problems/find-all-duplicates-in-an-array/" },
       { id: "frequency-of-the-most-frequent-element", title: "Frequency of the Most Frequent Element", difficulty: "Medium", leetcodeUrl: "https://leetcode.com/problems/frequency-of-the-most-frequent-element/" },
-      { id: "merge-intervals", title: "Merge Intervals", difficulty: "Medium", leetcodeUrl: "https://leetcode.com/problems/merge-intervals/" },
+      { id: "merge-intervals", title: "Merge Intervals", difficulty: "Medium", leetcodeUrl: "https://leetcode.com/problems/merge-intervals/", isEssential: true },
       { id: "insert-interval", title: "Insert Interval", difficulty: "Medium", leetcodeUrl: "https://leetcode.com/problems/insert-interval/" },
       { id: "meeting-rooms", title: "Meeting Rooms", difficulty: "Medium", leetcodeUrl: "https://leetcode.ca/all/252.html" },
       { id: "meeting-rooms-ii", title: "Meeting Rooms II", difficulty: "Medium", leetcodeUrl: "https://leetcode.ca/all/253.html" },
@@ -71,7 +72,7 @@ export const roadmapData: Module[] = [
       { id: "4sum", title: "4Sum", difficulty: "Hard", leetcodeUrl: "https://leetcode.com/problems/4sum/" },
       { id: "longest-consecutive-sequence", title: "Longest Consecutive Sequence", difficulty: "Hard", leetcodeUrl: "https://leetcode.com/problems/longest-consecutive-sequence/" },
       { id: "candy", title: "Candy", difficulty: "Hard", leetcodeUrl: "https://leetcode.com/problems/candy/" },
-      { id: "trapping-rain-water", title: "Trapping Rain Water", difficulty: "Hard", leetcodeUrl: "https://leetcode.com/problems/trapping-rain-water/" },
+      { id: "trapping-rain-water", title: "Trapping Rain Water", difficulty: "Hard", leetcodeUrl: "https://leetcode.com/problems/trapping-rain-water/", isEssential: true },
       { id: "jump-game-ii", title: "Jump Game II", difficulty: "Hard", leetcodeUrl: "https://leetcode.com/problems/jump-game-ii/" },
       { id: "length-of-unsorted-subarray", title: "Length of Unsorted Subarray", difficulty: "Hard", leetcodeUrl: "https://practice.geeksforgeeks.org/problems/length-of-unsorted-subarray3022/1" },
       { id: "count-of-smaller-numbers-after-self", title: "Count of Smaller Numbers After Self", difficulty: "Hard", leetcodeUrl: "https://leetcode.com/problems/count-of-smaller-numbers-after-self/" }
@@ -82,9 +83,9 @@ export const roadmapData: Module[] = [
     title: "Two Pointers",
     problems: [
       { id: "reverse-string", title: "Reverse String", difficulty: "Easy", leetcodeUrl: "https://leetcode.com/problems/reverse-string/" },
-      { id: "valid-palindrome", title: "Valid Palindrome", difficulty: "Easy", leetcodeUrl: "https://leetcode.com/problems/valid-palindrome/" },
+      { id: "valid-palindrome", title: "Valid Palindrome", difficulty: "Easy", leetcodeUrl: "https://leetcode.com/problems/valid-palindrome/", isEssential: true },
       { id: "two-sum-ii", title: "Two Sum II (Input Sorted)", difficulty: "Easy", leetcodeUrl: "https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/" },
-      { id: "container-with-most-water", title: "Container With Most Water", difficulty: "Medium", leetcodeUrl: "https://leetcode.com/problems/container-with-most-water/" }
+      { id: "container-with-most-water", title: "Container With Most Water", difficulty: "Medium", leetcodeUrl: "https://leetcode.com/problems/container-with-most-water/", isEssential: true }
     ]
   },
   {
@@ -94,9 +95,9 @@ export const roadmapData: Module[] = [
       { id: "count-distinct-elements-in-window", title: "Count Distinct Elements in Window K", difficulty: "Easy", leetcodeUrl: "https://practice.geeksforgeeks.org/problems/count-distinct-elements-in-every-window/1" },
       { id: "minimum-size-subarray-sum", title: "Minimum Size Subarray Sum", difficulty: "Easy", leetcodeUrl: "https://leetcode.com/problems/minimum-size-subarray-sum/" },
       { id: "find-all-anagrams", title: "Find All Anagrams in a String", difficulty: "Easy", leetcodeUrl: "https://leetcode.com/problems/find-all-anagrams-in-a-string/" },
-      { id: "longest-repeating-character-replacement", title: "Longest Repeating Character Replacement", difficulty: "Medium", leetcodeUrl: "https://leetcode.com/problems/longest-repeating-character-replacement/" },
+      { id: "longest-repeating-character-replacement", title: "Longest Repeating Character Replacement", difficulty: "Medium", leetcodeUrl: "https://leetcode.com/problems/longest-repeating-character-replacement/", isEssential: true },
       { id: "permutation-in-string", title: "Permutation in String", difficulty: "Medium", leetcodeUrl: "https://leetcode.com/problems/permutation-in-string/" },
-      { id: "sliding-window-maximum", title: "Sliding Window Maximum", difficulty: "Medium", leetcodeUrl: "https://leetcode.com/problems/sliding-window-maximum/" }
+      { id: "sliding-window-maximum", title: "Sliding Window Maximum", difficulty: "Medium", leetcodeUrl: "https://leetcode.com/problems/sliding-window-maximum/", isEssential: true }
     ]
   },
   {
@@ -194,11 +195,11 @@ export const roadmapData: Module[] = [
       { id: "first-bad-version", title: "First Bad Version", difficulty: "Easy", leetcodeUrl: "https://leetcode.com/problems/first-bad-version/" },
       { id: "find-first-and-last-position-bs", title: "Find First and Last Position", difficulty: "Medium", leetcodeUrl: "https://leetcode.com/problems/find-first-and-last-position-of-element-in-sorted-array/" },
       { id: "find-peak-element", title: "Find Peak Element", difficulty: "Medium", leetcodeUrl: "https://leetcode.com/problems/find-peak-element/" },
-      { id: "find-minimum-in-rotated", title: "Find Minimum in Rotated Sorted Array", difficulty: "Medium", leetcodeUrl: "https://leetcode.com/problems/find-minimum-in-rotated-sorted-array/" },
-      { id: "search-in-rotated-bs", title: "Search in Rotated Sorted Array", difficulty: "Medium", leetcodeUrl: "https://leetcode.com/problems/search-in-rotated-sorted-array/" },
+      { id: "find-minimum-in-rotated", title: "Find Minimum in Rotated Sorted Array", difficulty: "Medium", leetcodeUrl: "https://leetcode.com/problems/find-minimum-in-rotated-sorted-array/", isEssential: true },
+      { id: "search-in-rotated-bs", title: "Search in Rotated Sorted Array", difficulty: "Medium", leetcodeUrl: "https://leetcode.com/problems/search-in-rotated-sorted-array/", isEssential: true },
       { id: "search-a-2d-matrix", title: "Search a 2D Matrix", difficulty: "Medium", leetcodeUrl: "https://leetcode.com/problems/search-a-2d-matrix/" },
       { id: "search-a-2d-matrix-ii-bs", title: "Search a 2D Matrix II", difficulty: "Medium", leetcodeUrl: "https://leetcode.com/problems/search-a-2d-matrix-ii/" },
-      { id: "koko-eating-bananas", title: "Koko Eating Bananas", difficulty: "Medium", leetcodeUrl: "https://leetcode.com/problems/koko-eating-bananas/" },
+      { id: "koko-eating-bananas", title: "Koko Eating Bananas", difficulty: "Medium", leetcodeUrl: "https://leetcode.com/problems/koko-eating-bananas/", isEssential: true },
       { id: "time-based-key-value-store", title: "Time Based Key-Value Store", difficulty: "Medium", leetcodeUrl: "https://leetcode.com/problems/time-based-key-value-store/" },
       { id: "median-of-two-sorted-arrays-bs", title: "Median of Two Sorted Arrays", difficulty: "Hard", leetcodeUrl: "https://leetcode.com/problems/median-of-two-sorted-arrays/" }
     ]
@@ -305,7 +306,7 @@ export const roadmapData: Module[] = [
     title: "Graphs - BFS / DFS",
     problems: [
       { id: "flood-fill", title: "Flood Fill", difficulty: "Easy", leetcodeUrl: "https://leetcode.com/problems/flood-fill/" },
-      { id: "number-of-islands", title: "Number of Islands", difficulty: "Easy", leetcodeUrl: "https://leetcode.com/problems/number-of-islands/" },
+      { id: "number-of-islands", title: "Number of Islands", difficulty: "Easy", leetcodeUrl: "https://leetcode.com/problems/number-of-islands/", isEssential: true },
       { id: "max-area-of-island", title: "Max Area of Island", difficulty: "Easy", leetcodeUrl: "https://leetcode.com/problems/max-area-of-island/" },
       { id: "rotting-oranges-graph", title: "Rotting Oranges", difficulty: "Easy", leetcodeUrl: "https://leetcode.com/problems/rotting-oranges/" },
       { id: "01-matrix", title: "01 Matrix", difficulty: "Easy", leetcodeUrl: "https://leetcode.com/problems/01-matrix/" },
@@ -315,7 +316,7 @@ export const roadmapData: Module[] = [
       { id: "clone-graph", title: "Clone Graph", difficulty: "Medium", leetcodeUrl: "https://leetcode.com/problems/clone-graph/" },
       { id: "is-graph-bipartite", title: "Is Graph Bipartite?", difficulty: "Medium", leetcodeUrl: "https://leetcode.com/problems/is-graph-bipartite/" },
       { id: "detect-cycle-in-directed-graph", title: "Detect Cycle in Directed Graph", difficulty: "Medium", leetcodeUrl: "https://practice.geeksforgeeks.org/problems/detect-cycle-in-a-directed-graph/1" },
-      { id: "course-schedule", title: "Course Schedule", difficulty: "Medium", leetcodeUrl: "https://leetcode.com/problems/course-schedule/" },
+      { id: "course-schedule", title: "Course Schedule", difficulty: "Medium", leetcodeUrl: "https://leetcode.com/problems/course-schedule/", isEssential: true },
       { id: "course-schedule-ii", title: "Course Schedule II", difficulty: "Medium", leetcodeUrl: "https://leetcode.com/problems/course-schedule-ii/" },
       { id: "topological-sort", title: "Topological Sort", difficulty: "Medium", leetcodeUrl: "https://practice.geeksforgeeks.org/problems/topological-sort/1" },
       { id: "word-ladder", title: "Word Ladder", difficulty: "Medium", leetcodeUrl: "https://leetcode.com/problems/word-ladder/" },
@@ -334,18 +335,18 @@ export const roadmapData: Module[] = [
     id: "dynamic-programming",
     title: "Dynamic Programming",
     problems: [
-      { id: "climbing-stairs", title: "Climbing Stairs", difficulty: "Easy", leetcodeUrl: "https://leetcode.com/problems/climbing-stairs/" },
+      { id: "climbing-stairs", title: "Climbing Stairs", difficulty: "Easy", leetcodeUrl: "https://leetcode.com/problems/climbing-stairs/", isEssential: true },
       { id: "min-cost-climbing-stairs", title: "Min Cost Climbing Stairs", difficulty: "Easy", leetcodeUrl: "https://leetcode.com/problems/min-cost-climbing-stairs/" },
       { id: "maximum-subarray-dp", title: "Maximum Subarray", difficulty: "Easy", leetcodeUrl: "https://leetcode.com/problems/maximum-subarray/" },
-      { id: "house-robber", title: "House Robber", difficulty: "Easy", leetcodeUrl: "https://leetcode.com/problems/house-robber/" },
+      { id: "house-robber", title: "House Robber", difficulty: "Easy", leetcodeUrl: "https://leetcode.com/problems/house-robber/", isEssential: true },
       { id: "house-robber-ii", title: "House Robber II", difficulty: "Easy", leetcodeUrl: "https://leetcode.com/problems/house-robber-ii/" },
-      { id: "maximum-product-subarray", title: "Maximum Product Subarray", difficulty: "Easy", leetcodeUrl: "https://leetcode.com/problems/maximum-product-subarray/" },
+      { id: "maximum-product-subarray", title: "Maximum Product Subarray", difficulty: "Easy", leetcodeUrl: "https://leetcode.com/problems/maximum-product-subarray/", isEssential: true },
       { id: "decode-ways", title: "Decode Ways", difficulty: "Easy", leetcodeUrl: "https://leetcode.com/problems/decode-ways/" },
-      { id: "coin-change", title: "Coin Change", difficulty: "Easy", leetcodeUrl: "https://leetcode.com/problems/coin-change/" },
+      { id: "coin-change", title: "Coin Change", difficulty: "Easy", leetcodeUrl: "https://leetcode.com/problems/coin-change/", isEssential: true },
       { id: "coin-change-ii", title: "Coin Change II", difficulty: "Easy", leetcodeUrl: "https://leetcode.com/problems/coin-change-ii/" },
       { id: "min-coin", title: "Min Coin", difficulty: "Easy", leetcodeUrl: "https://practice.geeksforgeeks.org/problems/min-coin5549/1" },
       { id: "word-break-dp", title: "Word Break", difficulty: "Easy", leetcodeUrl: "https://leetcode.com/problems/word-break/" },
-      { id: "longest-increasing-subsequence", title: "Longest Increasing Subsequence", difficulty: "Medium", leetcodeUrl: "https://leetcode.com/problems/longest-increasing-subsequence/" },
+      { id: "longest-increasing-subsequence", title: "Longest Increasing Subsequence", difficulty: "Medium", leetcodeUrl: "https://leetcode.com/problems/longest-increasing-subsequence/", isEssential: true },
       { id: "printing-lis", title: "Printing LIS", difficulty: "Medium", leetcodeUrl: "https://practice.geeksforgeeks.org/problems/printing-longest-increasing-subsequence/1" },
       { id: "maximum-sum-increasing-subsequence", title: "Maximum Sum Increasing Subsequence", difficulty: "Medium", leetcodeUrl: "https://practice.geeksforgeeks.org/problems/maximum-sum-increasing-subsequence4749/1" },
       { id: "longest-string-chain", title: "Longest String Chain", difficulty: "Medium", leetcodeUrl: "https://leetcode.com/problems/longest-string-chain/" },
