@@ -295,7 +295,7 @@ export default function Home() {
             <img
               src="https://i.ibb.co/jvVWGRTv/Whats-App-Image-2025-12-06-at-3-21-53-PM.jpg"
               alt="Rameshkumar Kannan - Creator of DSA Mastery"
-              className="h-20 w-20 rounded-full border-4 border-zinc-800 shadow-xl object-cover"
+              className="h-32 w-32 rounded-full border-4 border-zinc-700 shadow-2xl object-cover ring-2 ring-emerald-500/20"
             />
             <p className="text-sm text-zinc-400 max-w-sm leading-relaxed">
               Created by{" "}
@@ -337,7 +337,6 @@ export default function Home() {
           <p className="text-xs text-zinc-700">© {new Date().getFullYear()} Rameshkumar Kannan · DSA Mastery</p>
         </div>
       </footer>
-      </div>
 
       {/* === 6. SUPPORT MODAL (QR CODE) === */}
       {isSupportModalOpen && (
