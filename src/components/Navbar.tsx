@@ -68,7 +68,7 @@ export default function Navbar() {
                         <>
                             <Link href="/job-tracker" className="inline-flex h-9 items-center justify-center gap-1.5 rounded-md border border-zinc-700 bg-transparent px-3 text-sm font-medium text-zinc-300 transition-colors hover:bg-zinc-800 hover:text-zinc-100">
                                 <Briefcase className="h-4 w-4" />
-                                <span className="hidden sm:block">Tracker</span>
+                                <span className="hidden sm:block">Application Tracker</span>
                             </Link>
 
                             {/* User Avatar or Email */}
