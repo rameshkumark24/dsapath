@@ -1,13 +1,19 @@
-// src/lib/supabaseClient.ts
 import { createClient } from '@supabase/supabase-js';
 
-// Retrieve keys securely from environment variables
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL as string;
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY as string;
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
 
-// Initialize the Supabase client
+// --- DEBUGGING BLOCK ---
+console.log("🔍 CHECKING ENV VARIABLES:");
+console.log("URL exists?", supabaseUrl.length > 0 ? "YES" : "NO");
+console.log("Key exists?", supabaseAnonKey.length > 0 ? "YES" : "NO");
+// -----------------------
+
+if (!supabaseUrl || !supabaseAnonKey) {
+    throw new Error("Missing Supabase environment variables! Check your .env.local file.");
+}
+
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
-
 /**
  * Initiates the Google OAuth sign-in process.
  */

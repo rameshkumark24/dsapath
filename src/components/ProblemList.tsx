@@ -2,8 +2,8 @@
 "use client";
 
 import { useState, useCallback } from "react";
+import ProgressBar from "@/components/ProgressBar";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Button } from "@/components/ui/button";
 import { ExternalLink, BookOpen } from "lucide-react";
 import { supabase } from "@/lib/supabaseClient";
 import { roadmapData, Difficulty } from "@/data/roadmap";
@@ -24,10 +24,9 @@ export default function ProblemList({ userId, initialCompletedIds = [] }: Proble
   const [completed, setCompleted] = useState<Set<string>>(new Set(initialCompletedIds));
 
   const toggleProblem = useCallback(
+    // @base-ui Checkbox onCheckedChange signature: (checked: boolean, event: Event) => void
     async (problemId: string, isChecked: boolean) => {
-      // SECURITY PROTOCOL: Strict typing and validation of problem_id
-      // Prevents prototype pollution or object injection attacks if someone 
-      // tampers with the DOM/State to pass an object instead of a string.
+      // SECURITY: Strict type validation to prevent state injection
       if (typeof problemId !== "string" || problemId.trim() === "") {
         console.error("Security/Validation Error: Invalid problem ID type.");
         return;
@@ -38,7 +37,7 @@ export default function ProblemList({ userId, initialCompletedIds = [] }: Proble
         return;
       }
 
-      // Optimistic UI Update: instantly update state to make UI feel blazing fast
+      // Optimistic UI Update: instantly update state for a snappy UX
       setCompleted((prev) => {
         const next = new Set(prev);
         if (isChecked) next.add(problemId);
@@ -48,8 +47,6 @@ export default function ProblemList({ userId, initialCompletedIds = [] }: Proble
 
       // Background Supabase Sync
       try {
-        // Since we didn't create a UNIQUE constraint on (user_id, problem_id) earlier, 
-        // we first check if the record exists to avoid duplicates.
         const { data: existingProgress } = await supabase
           .from("user_progress")
           .select("id")
@@ -77,8 +74,8 @@ export default function ProblemList({ userId, initialCompletedIds = [] }: Proble
         // Revert Optimistic Update on failure
         setCompleted((prev) => {
           const next = new Set(prev);
-          if (!isChecked) next.add(problemId); // Revert to checked
-          else next.delete(problemId); // Revert to unchecked
+          if (!isChecked) next.add(problemId);
+          else next.delete(problemId);
           return next;
         });
       }
@@ -89,10 +86,17 @@ export default function ProblemList({ userId, initialCompletedIds = [] }: Proble
   return (
     <div className="space-y-8 w-full max-w-4xl mx-auto">
       {roadmapData.map((module) => (
-        <div key={module.id} className="rounded-xl border border-zinc-800 bg-zinc-900/50 overflow-hidden">
-          {/* Module Header */}
-          <div className="bg-zinc-900 px-6 py-4 border-b border-zinc-800">
+        <div
+          key={module.id}
+          className="rounded-xl border border-zinc-800 bg-zinc-900/50 overflow-hidden"
+        >
+          {/* Module Header with inline Progress */}
+          <div className="bg-zinc-900 px-6 py-4 border-b border-zinc-800 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <h2 className="text-xl font-semibold text-zinc-100">{module.title}</h2>
+            <ProgressBar
+              totalProblems={module.problems.length}
+              solvedProblems={module.problems.filter((p) => completed.has(p.id)).length}
+            />
           </div>
 
           {/* Problems List */}
@@ -105,13 +109,19 @@ export default function ProblemList({ userId, initialCompletedIds = [] }: Proble
                   key={problem.id}
                   className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 sm:px-6 hover:bg-zinc-800/30 transition-colors gap-4"
                 >
-                  {/* Left Side: Checkbox & Info */}
+                  {/* Left: Checkbox + Problem Info */}
                   <div className="flex items-center space-x-4">
+                    {/*
+                      FIX: @base-ui Checkbox onCheckedChange fires with (checked: boolean, event)
+                      NOT Radix's CheckedState pattern. We extract only the boolean here.
+                    */}
                     <Checkbox
                       id={`checkbox-${problem.id}`}
                       checked={isCompleted}
-                      onCheckedChange={(checked) => toggleProblem(problem.id, checked === true)}
-                      className="border-zinc-500 data-[state=checked]:bg-emerald-500 data-[state=checked]:text-zinc-950"
+                      onCheckedChange={(checked) =>
+                        toggleProblem(problem.id, checked)
+                      }
+                      className="border-zinc-500"
                     />
                     <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-3 space-y-1 sm:space-y-0 text-sm">
                       <label
@@ -123,31 +133,38 @@ export default function ProblemList({ userId, initialCompletedIds = [] }: Proble
                         {problem.title}
                       </label>
                       <span
-                        className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold border ${
-                          difficultyStyles[problem.difficulty]
-                        }`}
+                        className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold border ${difficultyStyles[problem.difficulty]}`}
                       >
                         {problem.difficulty}
                       </span>
                     </div>
                   </div>
 
-                  {/* Right Side: Action Buttons */}
+                  {/* Right: Action Buttons */}
+                  {/* NOTE: @base-ui Button has no asChild prop (Radix-only).
+                      We use plain <a> tags with button-like Tailwind classes instead. */}
                   <div className="flex items-center space-x-2 w-full sm:w-auto ml-8 sm:ml-0">
-                    <Button variant="outline" size="sm" asChild className="w-full sm:w-auto h-8 border-zinc-700 hover:bg-zinc-800 text-zinc-300">
-                      <a href={problem.leetcodeUrl} target="_blank" rel="noopener noreferrer">
-                        <span>Solve</span>
-                        <ExternalLink className="ml-2 h-3.5 w-3.5 opacity-70" />
-                      </a>
-                    </Button>
+                    <a
+                      href={problem.leetcodeUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center justify-center h-8 px-2.5 text-[0.8rem] font-medium rounded-lg border border-zinc-700 bg-transparent text-zinc-300 hover:bg-zinc-800 transition-colors whitespace-nowrap"
+                    >
+                      <span>Solve</span>
+                      <ExternalLink className="ml-2 h-3.5 w-3.5 opacity-70" />
+                    </a>
 
                     {problem.affiliateLink && (
-                      <Button variant="secondary" size="sm" asChild className="w-full sm:w-auto h-8 bg-indigo-500/10 text-indigo-400 hover:bg-indigo-500/20 border-transparent">
-                        <a href={problem.affiliateLink} target="_blank" rel="noopener noreferrer" title="Recommended Resource">
-                          <span>Resource</span>
-                          <BookOpen className="ml-2 h-3.5 w-3.5 opacity-70" />
-                        </a>
-                      </Button>
+                      <a
+                        href={problem.affiliateLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        title="Recommended Resource"
+                        className="inline-flex items-center justify-center h-8 px-2.5 text-[0.8rem] font-medium rounded-lg border-transparent bg-indigo-500/10 text-indigo-400 hover:bg-indigo-500/20 transition-colors whitespace-nowrap"
+                      >
+                        <span>Resource</span>
+                        <BookOpen className="ml-2 h-3.5 w-3.5 opacity-70" />
+                      </a>
                     )}
                   </div>
                 </div>

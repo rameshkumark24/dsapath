@@ -1,22 +1,9 @@
 import type { Metadata } from "next";
-import localFont from "next/font/local";
+import { Inter } from "next/font/google";
 import "./globals.css";
 import Navbar from '@/components/Navbar';
-import { Geist } from "next/font/google";
-import { cn } from "@/lib/utils";
 
-const geist = Geist({subsets:['latin'],variable:'--font-sans'});
-
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
-});
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
-});
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "DSA Mastery Roadmap",
@@ -30,9 +17,9 @@ export default function RootLayout({
 }>) {
   return (
     // Class "dark" forces dark mode globally
-    <html lang="en" className={cn("dark", "font-sans", geist.variable)}>
+    <html lang="en" className="dark">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased flex min-h-screen flex-col bg-zinc-950 text-zinc-100`}
+        className={`${inter.className} antialiased flex min-h-screen flex-col bg-zinc-950 text-zinc-100`}
       >
         <Navbar />
         {/* Main content wrapper with constraints for a clean UI */}
