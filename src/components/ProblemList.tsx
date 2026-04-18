@@ -183,7 +183,7 @@ export default function ProblemList({ userId, initialCompletedIds = [] }: Proble
           </div>
           <div>
             <p className="font-bold text-amber-300 text-sm tracking-wide">DAY BEFORE INTERVIEW PREP</p>
-            <p className="text-xs text-zinc-500">Essential patterns, topics, and concepts to recall before your SDE drive.</p>
+            <p className="text-xs text-zinc-500">Essential patterns, core Java, and OOPs concepts to recall before your SDE drive.</p>
           </div>
         </div>
         <ExternalLink className="h-4 w-4 text-amber-500/60 group-hover:text-amber-400 transition-colors flex-shrink-0" />
