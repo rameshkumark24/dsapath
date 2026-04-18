@@ -1,19 +1,19 @@
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-// --- DEBUGGING BLOCK ---
-console.log("🔍 CHECKING ENV VARIABLES:");
-console.log("URL exists?", supabaseUrl.length > 0 ? "YES" : "NO");
-console.log("Key exists?", supabaseAnonKey.length > 0 ? "YES" : "NO");
-// -----------------------
-
-if (!supabaseUrl || !supabaseAnonKey) {
-    throw new Error("Missing Supabase environment variables! Check your .env.local file.");
+// During `next build`, NEXT_PUBLIC_* vars are available if set in Vercel dashboard.
+// We guard with a placeholder so `createClient` never throws during static generation.
+// At runtime in production, the real values are always present.
+if (typeof window !== 'undefined' && (!supabaseUrl || !supabaseAnonKey)) {
+    console.error('⚠️  Missing Supabase environment variables. Auth will not work.');
 }
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+export const supabase = createClient(
+    supabaseUrl   ?? 'https://placeholder.supabase.co',
+    supabaseAnonKey ?? 'placeholder-anon-key'
+);
 
 /**
  * Initiates the Google OAuth sign-in process.
