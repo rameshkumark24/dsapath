@@ -4,7 +4,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Terminal, LogOut, LogIn } from 'lucide-react';
+import { Terminal, LogOut, LogIn, Briefcase } from 'lucide-react';
 import type { User } from '@supabase/supabase-js';
 import { supabase, signInWithGoogle, signOut } from '@/lib/supabaseClient';
 
@@ -66,6 +66,11 @@ export default function Navbar() {
                     ) : user ? (
                         // --- Logged In State ---
                         <>
+                            <Link href="/job-tracker" className="inline-flex h-9 items-center justify-center gap-1.5 rounded-md border border-zinc-700 bg-transparent px-3 text-sm font-medium text-zinc-300 transition-colors hover:bg-zinc-800 hover:text-zinc-100">
+                                <Briefcase className="h-4 w-4" />
+                                <span className="hidden sm:block">Tracker</span>
+                            </Link>
+
                             {/* User Avatar or Email */}
                             <div className="flex items-center space-x-2">
                                 {avatarUrl ? (
