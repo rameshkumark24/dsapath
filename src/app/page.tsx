@@ -22,7 +22,8 @@ import {
   Globe,
   Mail,
   Coffee,
-  Briefcase
+  Briefcase,
+  GraduationCap
 } from "lucide-react";
 
 // Inline brand SVGs (lucide-react does not ship Linkedin/Youtube in all versions)
@@ -150,6 +151,34 @@ export default function Home() {
         </div>
         {/* initialCompletedIds is now fully hydrated from Supabase before mount */}
         <ProblemList userId={user.id} initialCompletedIds={initialCompletedIds} />
+
+        {/* ── Institutional / B2B Call to Action ──────────────────────────────── */}
+        <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-8 mt-16 max-w-4xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-6 shadow-[0_0_40px_-15px_rgba(16,185,129,0.1)] relative overflow-hidden">
+          {/* Subtle glow effect */}
+          <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/5 rounded-full blur-3xl pointer-events-none -translate-y-1/2 translate-x-1/3" />
+          
+          <div className="flex items-start md:items-center gap-5 z-10">
+            <div className="h-12 w-12 rounded-xl bg-zinc-950 border border-zinc-800 flex items-center justify-center flex-shrink-0 mt-1 md:mt-0">
+              <GraduationCap className="h-6 w-6 text-emerald-400" />
+            </div>
+            <div>
+              <h3 className="text-xl font-bold text-white tracking-tight">For Colleges & Placement Cells</h3>
+              <p className="text-zinc-400 text-sm mt-1.5 max-w-lg leading-relaxed">
+                Want to track your entire 2026 batch? Get a personalized Institutional Dashboard with real-time DSA progress tracking and placement analytics for your students.
+              </p>
+            </div>
+          </div>
+          
+          <div className="w-full md:w-auto flex-shrink-0 z-10 pt-2 md:pt-0">
+            <a
+              href="mailto:rameshkumaroff@gmail.com?subject=Institutional%20Dashboard%20Inquiry"
+              className="w-full md:w-auto inline-flex items-center justify-center bg-white text-black hover:bg-zinc-200 font-bold px-7 py-3 rounded-xl transition-all hover:scale-[1.02] active:scale-95 whitespace-nowrap"
+            >
+              Request a Demo
+            </a>
+          </div>
+        </div>
+
       </div>
     );
   }
