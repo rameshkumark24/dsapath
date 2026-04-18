@@ -303,9 +303,7 @@ export default function Home() {
             </p>
             <div className="z-10">
               <a
-                href="https://mail.google.com/mail/?view=cm&fs=1&to=rameshkumaroff@gmail.com&su=Inquiry%20regarding%20Institutional%20Dashboard%20for%20%5BCollege%20Name%5D"
-                target="_blank"
-                rel="noopener noreferrer"
+                href="mailto:rameshkumaroff@gmail.com?subject=Demo%20Request&body=Hi,%20I%20want%20a%20demo%20for%20my%20institution."
                 className="bg-white text-black hover:bg-zinc-200 px-6 py-2.5 rounded-lg font-medium inline-flex items-center transition-colors"
               >
                 Request a Demo
