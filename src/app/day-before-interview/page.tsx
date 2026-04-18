@@ -148,7 +148,7 @@ export default function DayBeforeInterview() {
             href="https://www.youtube.com/@Simplifywithrk"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white font-medium px-6 py-2.5 rounded-lg transition-colors"
+            className="inline-flex items-center gap-2 mt-8 bg-red-600 hover:bg-red-700 text-white font-medium px-6 py-2.5 rounded-lg transition-colors"
           >
             <YoutubeIcon />
             Subscribe to Simplifywithrk
