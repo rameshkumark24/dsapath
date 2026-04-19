@@ -1,36 +1,84 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# DSA Mastery Roadmap
 
-## Getting Started
+A high-conversion, comprehensive Data Structures and Algorithms (DSA) preparation platform built to help developers track their progress, master fundamental concepts, and organize job applications.
 
-First, run the development server:
+## 🚀 Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **DSA Mastery Curriculum**: A curated list of essential, must-do coding problems tailored for technical interviews.
+- **Progress Tracking**: Keep tabs on your solved problems with persistent progress tracking and Row Level Security (RLS) ensuring your data is private.
+- **Day Before Interview Hub**: A quick revision dashboard focusing on critical algorithms, patterns, and cheatsheets to review exactly 24 hours before your interview.
+- **Job Application Tracker**: A Kanban-style board to organize in-progress job applications, technical rounds, and interview feedback all in one place.
+- **Secure Authentication**: Seamless sign-in via Google OAuth, powered by Supabase.
+- **Optimistic UI**: A snappy user experience ensuring zero-lag state updates when interacting with the dashboard.
+- **Modern Clean Design**: Fully responsive, vibrant, and beautifully designed user interface.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🛠 Tech Stack
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **Frontend**: Next.js 14 (App Router), React, TypeScript
+- **Styling**: Tailwind CSS, Shadcn UI, base-ui
+- **Backend & Auth**: Supabase (PostgreSQL, Row Level Security, Google OAuth)
+- **Deployment**: Vercel
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 📂 Project Structure
 
-## Learn More
+- `src/app/`
+  - `/` - Landing page and the main roadmap hub.
+  - `/day-before-interview` - Dedicated dashboard for final review before technical rounds.
+  - `/job-tracker` - Kanban board to organize job applications and rounds.
+- `src/components/` - Reusable UI components.
+- `src/lib/` - Utility functions and Supabase configuration.
+- `src/data/` - Static data like problem definitions and study plans.
 
-To learn more about Next.js, take a look at the following resources:
+## ⚙️ Getting Started
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Prerequisites
+- Node.js (v18+)
+- npm, yarn, or pnpm
+- Supabase Project (Database & Authentication)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Installation & Setup
 
-## Deploy on Vercel
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/your-username/dsa-mastery-roadmap.git
+   cd dsa-mastery-roadmap
+   ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+2. **Install dependencies:**
+   ```bash
+   npm install
+   # or yarn / pnpm install
+   ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+3. **Environment Setup:**
+   Create a `.env.local` file at the root of the project with your Supabase credentials.
+   ```env
+   NEXT_PUBLIC_SUPABASE_URL=your-supabase-url
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
+   ```
+   *Note: Ensure Google OAuth and schema policies (Row Level Security) are configured in the Supabase dashboard.*
+
+4. **Run the development server:**
+   ```bash
+   npm run dev
+   ```
+
+5. **Open the App:**
+   Visit [http://localhost:3000](http://localhost:3000) in your browser.
+
+## 🚢 Deployment
+
+This project is optimized for deployment on Vercel. 
+1. Push your code to GitHub.
+2. Link the repository to your Vercel account.
+3. Add the `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` to the Vercel project environment variables.
+4. Deploy!
+
+## 🤝 Contributing
+
+Contributions, issues, and feature requests are welcome! 
+Feel free to check [issues page](https://github.com/your-username/dsa-mastery-roadmap/issues).
+
+## 📄 License
+
+This project is open-source and available under the terms of the MIT License.
