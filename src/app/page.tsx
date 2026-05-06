@@ -1,17 +1,14 @@
 "use client";
 
-// src/app/page.tsx
 import { useEffect, useState } from "react";
 import type { User } from "@supabase/supabase-js";
 import { supabase, signInWithGoogle } from "@/lib/supabaseClient";
 import ProblemList from "@/components/ProblemList";
-import Image from "next/image";
+import Link from "next/link";
 import {
   Terminal,
   ArrowRight,
-  CheckCircle,
   Zap,
-  Target,
   LayoutList,
   LineChart,
   Code2,
@@ -19,14 +16,14 @@ import {
   X,
   Copy,
   Check,
-  Globe,
   Mail,
   Coffee,
   Briefcase,
-  GraduationCap
+  GraduationCap,
+  PlayCircle
 } from "lucide-react";
 
-// Inline brand SVGs (lucide-react does not ship Linkedin/Youtube in all versions)
+// ── Brand Icons ─────────────────────────────────────────────────────────────
 const LinkedinIcon = () => (
   <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
     <path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z" />
@@ -43,27 +40,20 @@ const YoutubeIcon = () => (
 export default function Home() {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-
-  // Separate loading state for DB fetch — prevents ProblemList mounting early
   const [isFetchingProgress, setIsFetchingProgress] = useState(false);
   const [initialCompletedIds, setInitialCompletedIds] = useState<string[]>([]);
-
-  // Support Modal State
   const [isSupportModalOpen, setIsSupportModalOpen] = useState(false);
   const [hasCopied, setHasCopied] = useState(false);
 
-  // ── Auth session management ────────────────────────────────────────────────
+  // ── Auth & Progress Fetching ───────────────────────────────────────────────
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
       setIsLoading(false);
     });
 
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
-      // Reset progress cache when user logs out so next login re-fetches cleanly
       if (!session?.user) {
         setInitialCompletedIds([]);
       }
@@ -72,9 +62,8 @@ export default function Home() {
     return () => subscription.unsubscribe();
   }, []);
 
-  // ── Fetch user progress once user is known ─────────────────────────────────
   useEffect(() => {
-    if (!user) return; // SECURITY: never query without a verified user
+    if (!user) return;
 
     const fetchUserProgress = async () => {
       setIsFetchingProgress(true);
@@ -86,12 +75,10 @@ export default function Home() {
           .eq("completed", true);
 
         if (error) throw error;
-
         const ids = (data ?? []).map((row: { problem_id: string }) => row.problem_id);
         setInitialCompletedIds(ids);
       } catch (err) {
         console.error("Failed to fetch user progress:", err);
-        // On error, fall back to empty so the roadmap still renders
         setInitialCompletedIds([]);
       } finally {
         setIsFetchingProgress(false);
@@ -99,7 +86,7 @@ export default function Home() {
     };
 
     fetchUserProgress();
-  }, [user]); // Re-runs anytime user changes (login / account switch)
+  }, [user]);
 
   const handleSignIn = async () => {
     try {
@@ -116,19 +103,13 @@ export default function Home() {
   };
 
   const handleDemo = () => {
-    const gmailUrl = "https://mail.google.com/mail/?view=cm&fs=1&to=rameshkumaroff@gmail.com&su=Demo%20Request&body=Hi,%20I%20want%20a%20demo%20for%20my%20institution.";
-    const mailtoUrl = "mailto:rameshkumaroff@gmail.com?subject=Demo%20Request&body=Hi,%20I%20want%20a%20demo%20for%20my%20institution.";
-
-    // Try mailto first (works for configured local clients)
+    const gmailUrl = "https://mail.google.com/mail/?view=cm&fs=1&to=rameshkumaroff@gmail.com&su=Demo%20Request";
+    const mailtoUrl = "mailto:rameshkumaroff@gmail.com?subject=Demo%20Request";
     window.location.href = mailtoUrl;
-
-    // Fallback to Gmail Web UI in a new tab if no local client intercepts
-    setTimeout(() => {
-      window.open(gmailUrl, "_blank", "noopener,noreferrer");
-    }, 500);
+    setTimeout(() => { window.open(gmailUrl, "_blank", "noopener,noreferrer"); }, 500);
   };
 
-  // ── Loading State (auth check) ─────────────────────────────────────────────
+  // ── Loading State ──────────────────────────────────────────────────────────
   if (isLoading) {
     return (
       <div className="flex min-h-[60vh] flex-col items-center justify-center gap-4 bg-zinc-950">
@@ -138,9 +119,8 @@ export default function Home() {
     );
   }
 
-  // ── Logged In: Show Roadmap ────────────────────────────────────────────────
+  // ── Logged In: Show Dashboard ──────────────────────────────────────────────
   if (user) {
-    // CRITICAL: Block render until Supabase progress data has returned.
     if (isFetchingProgress) {
       return (
         <div className="flex min-h-[60vh] flex-col items-center justify-center gap-4 bg-zinc-950">
@@ -152,18 +132,40 @@ export default function Home() {
 
     return (
       <div className="w-full bg-zinc-950 min-h-screen py-10 px-4">
-        <div className="mb-10 text-center">
-          <h1 className="text-4xl font-extrabold tracking-tight text-zinc-100 sm:text-5xl">
-            DSA Mastery{" "}
-            <span className="text-emerald-500">Roadmap</span>
-          </h1>
-          <p className="mt-3 text-zinc-400 text-base sm:text-lg max-w-xl mx-auto">
-            Track your progress through every essential pattern. Check off
-            problems as you solve them.
-          </p>
+        <div className="max-w-7xl mx-auto">
+          
+          {/* === LOGGED IN: DAY BEFORE INTERVIEW BANNER === */}
+          <Link 
+            href="/day-before-interview" 
+            className="group mb-10 block w-full bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/20 rounded-2xl p-4 sm:p-6 transition-all hover:border-amber-500/40 hover:bg-amber-500/15 relative overflow-hidden"
+          >
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 relative z-10">
+              <div className="flex items-center gap-4">
+                <div className="h-12 w-12 rounded-full bg-amber-500/20 flex items-center justify-center flex-shrink-0 border border-amber-500/30">
+                  <Zap className="h-6 w-6 text-amber-400" />
+                </div>
+                <div>
+                  <h3 className="text-zinc-100 font-bold text-lg">Day Before Interview Crash Course</h3>
+                  <p className="text-zinc-400 text-sm">Review OOPs, high-yield patterns, and perfect your self-intro.</p>
+                </div>
+              </div>
+              <div className="inline-flex items-center gap-2 text-amber-500 font-bold text-sm group-hover:translate-x-1 transition-transform bg-amber-500/10 px-4 py-2 rounded-lg">
+                <PlayCircle className="h-4 w-4" /> Watch Now <ArrowRight className="h-4 w-4" />
+              </div>
+            </div>
+          </Link>
+
+          <div className="mb-10 text-center">
+            <h1 className="text-4xl font-extrabold tracking-tight text-zinc-100 sm:text-5xl">
+              DSA Mastery <span className="text-emerald-500">Roadmap</span>
+            </h1>
+            <p className="mt-3 text-zinc-400 text-base sm:text-lg max-w-xl mx-auto">
+              Track your progress through every essential pattern. Check off problems as you solve them.
+            </p>
+          </div>
+          
+          <ProblemList userId={user.id} initialCompletedIds={initialCompletedIds} />
         </div>
-        {/* initialCompletedIds is now fully hydrated from Supabase before mount */}
-        <ProblemList userId={user.id} initialCompletedIds={initialCompletedIds} />
       </div>
     );
   }
@@ -172,12 +174,10 @@ export default function Home() {
   return (
     <div className="w-full min-h-screen bg-zinc-950 text-zinc-100 flex flex-col items-center overflow-x-hidden selection:bg-emerald-500/30">
       
-      {/* Container to restrict width and center content */}
-      <div className="w-full max-w-6xl px-4 sm:px-6 lg:px-8 py-24 space-y-40">
+      <div className="w-full max-w-6xl px-4 sm:px-6 lg:px-8 py-24 space-y-32">
         
         {/* === 1. HERO SECTION === */}
         <section className="relative flex flex-col items-center text-center">
-          {/* Ambient Glow */}
           <div aria-hidden="true" className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none">
             <div className="h-[400px] w-[600px] rounded-full bg-emerald-500/10 blur-[150px]" />
           </div>
@@ -203,18 +203,52 @@ export default function Home() {
             onClick={handleSignIn}
             className="group mt-10 inline-flex items-center gap-3 rounded-2xl bg-emerald-600 px-8 py-4 text-lg font-bold text-white shadow-[0_0_40px_-10px_rgba(16,185,129,0.4)] transition-all duration-300 hover:bg-emerald-500 hover:shadow-[0_0_60px_-15px_rgba(16,185,129,0.6)] hover:-translate-y-1 z-10"
           >
-            <svg className="h-5 w-5" viewBox="0 0 24 24" aria-hidden="true">
-              <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
-              <path fill="currentColor" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
-              <path fill="currentColor" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" />
-              <path fill="currentColor" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
-            </svg>
-            Sign in with Google
+            Start Tracking Progress
             <ArrowRight className="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1.5" />
           </button>
         </section>
 
-        {/* === 2. THE MISSION / PLACEMENT TIPS === */}
+        {/* === 2. LEAD MAGNET: DAY BEFORE INTERVIEW TEASER === */}
+        <section className="relative z-10 w-full max-w-5xl mx-auto">
+          <div className="rounded-3xl bg-gradient-to-b from-amber-500/20 to-transparent p-[1px] overflow-hidden">
+            <div className="bg-zinc-950 border border-zinc-800/50 rounded-[23px] p-8 sm:p-12 flex flex-col md:flex-row items-center gap-8 md:gap-12 relative overflow-hidden">
+              <div className="absolute -right-20 -top-20 w-64 h-64 bg-amber-500/10 blur-3xl rounded-full pointer-events-none" />
+              
+              <div className="flex-1 space-y-5 relative z-10 text-center md:text-left">
+                <div className="inline-flex items-center gap-2 rounded-full border border-amber-500/30 bg-amber-500/10 px-3 py-1 text-xs font-bold text-amber-400 uppercase tracking-widest">
+                  <Zap className="h-3.5 w-3.5 fill-amber-400/30" />
+                  Premium Series
+                </div>
+                <h2 className="text-3xl sm:text-4xl font-black text-zinc-100 leading-tight">
+                  Interview Tomorrow? <br/>
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-500">Don't Panic.</span>
+                </h2>
+                <p className="text-zinc-400 text-lg leading-relaxed">
+                  Unlock our exclusive <strong>"Day Before Interview"</strong> crash course. Consolidate your knowledge, review high-yield OOPs, and master the perfect self-introduction.
+                </p>
+                <button 
+                  onClick={handleSignIn}
+                  className="mt-2 inline-flex items-center gap-2 bg-amber-500 text-amber-950 hover:bg-amber-400 px-6 py-3 rounded-xl font-bold transition-all hover:scale-105"
+                >
+                  <PlayCircle className="h-5 w-5" />
+                  Sign In to Unlock Free Series
+                </button>
+              </div>
+              
+              {/* Mockup / Image side */}
+              <div className="w-full md:w-2/5 aspect-[4/3] bg-zinc-900 border border-zinc-800 rounded-2xl flex flex-col items-center justify-center relative overflow-hidden group cursor-pointer" onClick={handleSignIn}>
+                 <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 to-transparent" />
+                 <YoutubeIcon />
+                 <div className="absolute bottom-4 left-4 right-4 bg-zinc-950/80 backdrop-blur border border-zinc-800 p-4 rounded-xl space-y-2 transform translate-y-2 opacity-80 group-hover:translate-y-0 group-hover:opacity-100 transition-all">
+                   <div className="h-2 w-1/3 bg-amber-500/40 rounded" />
+                   <div className="h-2 w-2/3 bg-zinc-700 rounded" />
+                 </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* === 3. THE MISSION / PLACEMENT TIPS === */}
         <section className="relative z-10 w-full">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="flex flex-col items-center text-center p-8 rounded-3xl bg-zinc-900/40 border border-zinc-800/60 transition-transform duration-300 hover:-translate-y-2">
@@ -249,24 +283,9 @@ export default function Home() {
           </div>
         </section>
 
-        {/* === 3. CURRICULUM PREVIEW === */}
-        <section className="w-full flex flex-col items-center text-center">
-          <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-4">Inside the Roadmap</h2>
-          <p className="text-zinc-400 mb-12 max-w-2xl">Master these core concepts and you'll be ready to tackle any unseen variation in a real interview setting.</p>
-          
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 w-full">
-            {["Arrays & Hashing", "Two Pointers", "Sliding Window", "Stack", "Binary Search", "Linked List", "Trees", "Tries", "Heap / Priority Queue", "Backtracking", "Graphs", "Dynamic Programming"].map((cat) => (
-              <div key={cat} className="py-4 px-3 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center font-medium text-sm text-zinc-300 hover:border-emerald-500/50 hover:text-emerald-400 cursor-default transition-colors">
-                {cat}
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* === 4. WALL OF LOVE (Testimonials) === */}
+        {/* === 4. WALL OF LOVE === */}
         <section className="w-full flex flex-col items-center">
           <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-12">Developers love it</h2>
-          
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-4xl">
             <div className="p-8 rounded-3xl bg-zinc-900/60 border border-zinc-800 flex flex-col">
               <div className="flex text-amber-400 mb-4">
@@ -298,13 +317,12 @@ export default function Home() {
           </div>
         </section>
 
-      </div>{/* end of max-w-6xl container */}
+      </div>
 
       {/* === 5. CONTACT & ENTERPRISE FOOTER === */}
       <div className="w-full max-w-7xl mx-auto px-6 mb-24">
         <section className="grid grid-cols-1 md:grid-cols-2 gap-6 border-t border-zinc-800/50 pt-12">
           
-          {/* Card 1: For Institutions */}
           <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-8 flex flex-col relative overflow-hidden group hover:border-zinc-700 transition-colors">
             <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/5 rounded-full blur-3xl pointer-events-none -translate-y-1/2 translate-x-1/3" />
             <div className="h-12 w-12 rounded-xl bg-zinc-950 border border-zinc-800 flex items-center justify-center flex-shrink-0 mb-6 z-10">
@@ -325,7 +343,6 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Card 2: Contact Developer */}
           <div className="bg-zinc-950 border border-zinc-800 rounded-xl p-8 flex flex-col group hover:border-zinc-700 transition-colors">
             <div className="h-12 w-12 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center flex-shrink-0 mb-6">
               <Code2 className="h-6 w-6 text-zinc-400 group-hover:text-amber-400 transition-colors" />
@@ -351,10 +368,8 @@ export default function Home() {
       </div>
 
       {/* === 6. MAIN SITE FOOTER === */}
-      <footer className="w-full bg-zinc-950/50 border-t border-zinc-800 py-12 px-6 mt-8">
+      <footer className="w-full bg-zinc-950/50 border-t border-zinc-800 py-12 px-6">
         <div className="max-w-6xl mx-auto flex flex-col items-center gap-8">
-
-          {/* Creator Profile */}
           <div className="flex flex-col items-center text-center gap-4">
             <img
               src="https://i.ibb.co/jvVWGRTv/Whats-App-Image-2025-12-06-at-3-21-53-PM.jpg"
@@ -369,7 +384,6 @@ export default function Home() {
             </p>
           </div>
 
-          {/* Support Button */}
           <button
             onClick={() => setIsSupportModalOpen(true)}
             className="group inline-flex items-center gap-2 rounded-full border border-zinc-700 bg-zinc-900 px-5 py-2.5 text-sm font-medium text-zinc-300 hover:bg-zinc-800 hover:border-zinc-500 hover:text-white transition-all"
@@ -378,31 +392,25 @@ export default function Home() {
             Buy me a coffee / Support this project
           </button>
 
-          {/* Social Links */}
           <div className="flex flex-wrap justify-center items-center gap-6 text-sm text-zinc-500">
             <a href="https://www.linkedin.com/in/rameshkumark24/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 hover:text-white transition-colors">
-              <LinkedinIcon />
-              LinkedIn
+              <LinkedinIcon /> LinkedIn
             </a>
             <a href="https://www.youtube.com/@Simplifywithrk" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 hover:text-white transition-colors">
-              <YoutubeIcon />
-              YouTube
+              <YoutubeIcon /> YouTube
             </a>
             <a href="https://rameshkumark.vercel.app/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 hover:text-white transition-colors">
-              <Briefcase className="h-4 w-4" />
-              Portfolio
+              <Briefcase className="h-4 w-4" /> Portfolio
             </a>
             <a href="mailto:rameshkumaroff@gmail.com" className="flex items-center gap-1.5 hover:text-white transition-colors">
-              <Mail className="h-4 w-4" />
-              Contact
+              <Mail className="h-4 w-4" /> Contact
             </a>
           </div>
-
           <p className="text-xs text-zinc-700">© {new Date().getFullYear()} Rameshkumar Kannan · DSA Mastery</p>
         </div>
       </footer>
 
-      {/* === 6. SUPPORT MODAL (QR CODE) === */}
+      {/* === 7. SUPPORT MODAL === */}
       {isSupportModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
           <div className="relative w-full max-w-sm rounded-3xl bg-zinc-900 border border-zinc-800 p-8 shadow-2xl animate-in zoom-in-95 duration-200 text-center">
@@ -424,7 +432,6 @@ export default function Home() {
             </p>
 
             <div className="bg-white p-4 rounded-2xl mb-6 mx-auto w-fit">
-              {/* Using standard img tag because next/image requires domain config for external APIs, and we prefer not to require more config changes for this */}
               <img 
                 src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=kumar978777ram-1@okaxis&pn=Ramesh" 
                 alt="UPI QR Code"
