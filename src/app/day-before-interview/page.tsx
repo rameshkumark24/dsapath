@@ -27,6 +27,7 @@ const checklistSections = [
     number: "01",
     title: "The Perfect Self-Introduction",
     color: "emerald",
+    videoId: "O6RqAzIQXSE", // Added the YouTube video ID here
     bullets: [
       "Keep it under 60 seconds — any longer and you've lost them.",
       "State your primary stack (Java / React) confidently, not apologetically.",
@@ -166,7 +167,7 @@ export default function DayBeforeInterview() {
           </p>
 
           <div className="space-y-4">
-            {checklistSections.map(({ icon: Icon, number, title, color, bullets }) => {
+            {checklistSections.map(({ icon: Icon, number, title, color, bullets, videoId }) => {
               const c = colorMap[color];
               return (
                 <div
@@ -186,8 +187,21 @@ export default function DayBeforeInterview() {
 
                   {/* Card body */}
                   <div className="px-5 pt-4 pb-5">
-                    {/* Video placeholder */}
-                    <VideoPlaceholder />
+                    {/* Render embedded YouTube video if ID is provided, else fallback to Placeholder */}
+                    {videoId ? (
+                      <div className="w-full aspect-video bg-zinc-950 rounded-lg border border-zinc-800/50 mb-4 relative overflow-hidden">
+                        <iframe
+                          className="absolute inset-0 w-full h-full"
+                          src={`https://www.youtube.com/embed/${videoId}`}
+                          title={title}
+                          frameBorder="0"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                          allowFullScreen
+                        ></iframe>
+                      </div>
+                    ) : (
+                      <VideoPlaceholder />
+                    )}
 
                     {/* Ultra-compact bullets */}
                     <ul className="flex flex-col gap-2">
@@ -207,7 +221,7 @@ export default function DayBeforeInterview() {
         </section>
 
         {/* ── Motivational close ───────────────────────────────────────── */}
-        <div className="rounded-2xl border border-amber-500/20 bg-amber-500/5 p-7 text-center space-y-2">
+        <div className="rounded-2xl border border-amber-500/20 bg-amber-500/5 p-7 text-center space-y-2 mt-12">
           <p className="text-xl font-black text-amber-500">You&apos;ve done the work. Trust it.</p>
           <p className="text-sm text-zinc-400 max-w-lg mx-auto">
             Sleep well, eat breakfast, and walk in knowing your prep was structured and intentional.
