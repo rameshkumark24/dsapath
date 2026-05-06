@@ -2,12 +2,10 @@
 "use client";
 
 import { useState, useCallback, useMemo } from "react";
-import Link from "next/link";
 import { supabase } from "@/lib/supabaseClient";
 import { roadmapData, Difficulty } from "@/data/roadmap";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
-  Zap,
   ChevronDown,
   Trophy,
   ExternalLink,
@@ -31,8 +29,6 @@ const DIFFICULTY_STYLES: Record<Difficulty, string> = {
 };
 
 const ALL_TOPICS = ["All Topics", ...roadmapData.map((m) => m.title)];
-// Note: TOTAL_PROBLEMS is a static constant; dynamic totals based on filters
-// are computed inline via useMemo inside the component.
 
 // ── Circular Progress Ring ─────────────────────────────────────────────────
 function CircularProgress({ pct }: { pct: number }) {
@@ -188,23 +184,6 @@ export default function ProblemList({ userId, initialCompletedIds = [] }: Proble
 
   return (
     <div className="w-full max-w-5xl mx-auto space-y-6">
-
-      {/* ── Day Before Interview Banner ─────────────────────────────────── */}
-      <Link
-        href="/day-before-interview"
-        className="group flex items-center justify-between w-full rounded-2xl border border-amber-500/30 bg-gradient-to-r from-amber-500/10 to-orange-500/5 px-6 py-4 hover:border-amber-400/50 hover:from-amber-500/15 transition-all duration-300"
-      >
-        <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-500/20 border border-amber-500/30">
-            <Zap className="h-5 w-5 text-amber-400 fill-amber-400/30" />
-          </div>
-          <div>
-            <p className="font-bold text-amber-300 text-sm tracking-wide">DAY BEFORE INTERVIEW PREP</p>
-            <p className="text-xs text-zinc-500">Essential patterns, core Java, and OOPs concepts to recall before your SDE drive.</p>
-          </div>
-        </div>
-        <ExternalLink className="h-4 w-4 text-amber-500/60 group-hover:text-amber-400 transition-colors flex-shrink-0" />
-      </Link>
 
       {/* ── Overall Progress Dashboard ──────────────────────────────────── */}
       <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-6">
