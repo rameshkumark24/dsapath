@@ -1,15 +1,20 @@
 // src/components/ProblemList.tsx
 "use client";
 
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, useEffect } from "react";
+import Link from "next/link";
 import { supabase } from "@/lib/supabaseClient";
 import { roadmapData, Difficulty } from "@/data/roadmap";
+import { sqlRoadmapData } from "@/data/sqlRoadmap"; // Make sure this path matches where you saved it!
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   ChevronDown,
   Trophy,
   ExternalLink,
   Flame,
+  Code2,
+  Database,
+  Zap
 } from "lucide-react";
 
 // ── Types ──────────────────────────────────────────────────────────────────
@@ -20,6 +25,7 @@ interface ProblemListProps {
 
 type StatusFilter = "All" | "Solved" | "Unsolved";
 type DifficultyFilter = "All" | Difficulty;
+type Track = "DSA" | "SQL";
 
 // ── Constants ──────────────────────────────────────────────────────────────
 const DIFFICULTY_STYLES: Record<Difficulty, string> = {
@@ -28,13 +34,16 @@ const DIFFICULTY_STYLES: Record<Difficulty, string> = {
   Hard:   "text-rose-400   bg-rose-400/10   border border-rose-400/20",
 };
 
-const ALL_TOPICS = ["All Topics", ...roadmapData.map((m) => m.title)];
-
 // ── Circular Progress Ring ─────────────────────────────────────────────────
-function CircularProgress({ pct }: { pct: number }) {
+function CircularProgress({ pct, track }: { pct: number, track: Track }) {
   const r = 54;
   const circ = 2 * Math.PI * r;
   const dash = (pct / 100) * circ;
+  
+  // Dynamic gradient based on active track
+  const gradStart = track === "DSA" ? "#10b981" : "#3b82f6"; // emerald vs blue
+  const gradEnd = track === "DSA" ? "#06b6d4" : "#8b5cf6";   // cyan vs purple
+
   return (
     <svg width="140" height="140" viewBox="0 0 140 140" className="rotate-[-90deg]">
       <circle cx="70" cy="70" r={r} fill="none" stroke="#27272a" strokeWidth="12" />
@@ -47,8 +56,8 @@ function CircularProgress({ pct }: { pct: number }) {
       />
       <defs>
         <linearGradient id="ring-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%"   stopColor="#10b981" />
-          <stop offset="100%" stopColor="#06b6d4" />
+          <stop offset="0%"   stopColor={gradStart} />
+          <stop offset="100%" stopColor={gradEnd} />
         </linearGradient>
       </defs>
     </svg>
@@ -56,17 +65,21 @@ function CircularProgress({ pct }: { pct: number }) {
 }
 
 // ── Mini Topic Progress Bar ────────────────────────────────────────────────
-function TopicBar({ title, solved, total }: { title: string; solved: number; total: number }) {
+function TopicBar({ title, solved, total, track }: { title: string; solved: number; total: number; track: Track }) {
   const pct = total > 0 ? Math.round((solved / total) * 100) : 0;
+  const bgGradient = track === "DSA" 
+    ? "bg-gradient-to-r from-emerald-500 to-teal-500" 
+    : "bg-gradient-to-r from-blue-500 to-indigo-500";
+
   return (
     <div className="flex flex-col gap-1">
       <div className="flex justify-between text-xs text-zinc-400">
-        <span className="truncate max-w-[120px]">{title}</span>
+        <span className="truncate max-w-[120px]" title={title}>{title}</span>
         <span className="font-mono text-zinc-300 flex-shrink-0 ml-2">{solved}/{total}</span>
       </div>
       <div className="h-1.5 w-full rounded-full bg-zinc-800 overflow-hidden">
         <div
-          className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 transition-all duration-700"
+          className={`h-full rounded-full ${bgGradient} transition-all duration-700`}
           style={{ width: `${pct}%` }}
         />
       </div>
@@ -78,27 +91,50 @@ function TopicBar({ title, solved, total }: { title: string; solved: number; tot
 export default function ProblemList({ userId, initialCompletedIds = [] }: ProblemListProps) {
   const [completed, setCompleted] = useState<Set<string>>(new Set(initialCompletedIds));
 
+  // ── NEW: Track Switcher State ──
+  const [activeTrack, setActiveTrack] = useState<Track>("DSA");
+
   // Filter state
   const [statusFilter, setStatusFilter]     = useState<StatusFilter>("All");
   const [diffFilter, setDiffFilter]         = useState<DifficultyFilter>("All");
   const [topicFilter, setTopicFilter]       = useState("All Topics");
   const [mustDoOnly, setMustDoOnly]         = useState(false);
 
-  // ── Derived stats (useMemo = no unnecessary recalculations) ───────────────
-  const totalSolved = useMemo(() => completed.size, [completed]);
+  // Determine which dataset we are currently looking at
+  const currentRoadmap = useMemo(() => activeTrack === "DSA" ? roadmapData : sqlRoadmapData, [activeTrack]);
+
+  // Dynamically generate the dropdown topics based on the active track
+  const ALL_TOPICS = useMemo(() => ["All Topics", ...currentRoadmap.map((m) => m.title)], [currentRoadmap]);
+
+  // Reset topic filter if we switch tracks so it doesn't get stuck on a topic that doesn't exist
+  useEffect(() => {
+    setTopicFilter("All Topics");
+  }, [activeTrack]);
+
+  // ── Derived stats ────────────────────────────────────────────────────────
+  // Calculate total solved ONLY for the active track
+  const totalSolvedForTrack = useMemo(() => {
+    let count = 0;
+    currentRoadmap.forEach(module => {
+      module.problems.forEach(p => {
+        if (completed.has(p.id)) count++;
+      });
+    });
+    return count;
+  }, [completed, currentRoadmap]);
 
   // Total problem count — recalculates when mustDoOnly changes
   const totalProblems = useMemo(() =>
-    roadmapData.reduce((acc, m) => {
+    currentRoadmap.reduce((acc, m) => {
       const probs = mustDoOnly ? m.problems.filter((p) => p.isEssential) : m.problems;
       return acc + probs.length;
     }, 0),
-    [mustDoOnly]
+    [mustDoOnly, currentRoadmap]
   );
 
-  // Topic bars — counts essential-only when mustDoOnly is active
+  // Topic bars 
   const topicStats = useMemo(() =>
-    roadmapData.map((m) => {
+    currentRoadmap.map((m) => {
       const probs = mustDoOnly ? m.problems.filter((p) => p.isEssential) : m.problems;
       return {
         id:     m.id,
@@ -106,13 +142,13 @@ export default function ProblemList({ userId, initialCompletedIds = [] }: Proble
         total:  probs.length,
         solved: probs.filter((p) => completed.has(p.id)).length,
       };
-    }).filter((t) => t.total > 0), // hide topics with 0 essential problems in must-do mode
-    [completed, mustDoOnly]
+    }).filter((t) => t.total > 0),
+    [completed, mustDoOnly, currentRoadmap]
   );
 
-  // Flat filtered list — never mutates source data
+  // Flat filtered list 
   const filteredModules = useMemo(() => {
-    return roadmapData
+    return currentRoadmap
       .filter((m) => topicFilter === "All Topics" || m.title === topicFilter)
       .map((m) => ({
         ...m,
@@ -128,9 +164,9 @@ export default function ProblemList({ userId, initialCompletedIds = [] }: Proble
         }),
       }))
       .filter((m) => m.problems.length > 0);
-  }, [statusFilter, diffFilter, topicFilter, mustDoOnly, completed]);
+  }, [statusFilter, diffFilter, topicFilter, mustDoOnly, completed, currentRoadmap]);
 
-  // ── Toggle problem (optimistic UI + Supabase sync) ─────────────────────
+  // ── Toggle problem ───────────────────────────────────────────────────────
   const toggleProblem = useCallback(
     async (problemId: string, isChecked: boolean) => {
       if (typeof problemId !== "string" || !problemId.trim()) return;
@@ -140,7 +176,6 @@ export default function ProblemList({ userId, initialCompletedIds = [] }: Proble
         return;
       }
 
-      // Optimistic update
       setCompleted((prev) => {
         const next = new Set(prev);
         isChecked ? next.add(problemId) : next.delete(problemId);
@@ -167,7 +202,6 @@ export default function ProblemList({ userId, initialCompletedIds = [] }: Proble
         if (error) throw error;
       } catch (err) {
         console.error("Failed to sync progress:", err);
-        // Revert on failure
         setCompleted((prev) => {
           const next = new Set(prev);
           isChecked ? next.delete(problemId) : next.add(problemId);
@@ -179,38 +213,66 @@ export default function ProblemList({ userId, initialCompletedIds = [] }: Proble
   );
 
   const overallPct = totalProblems > 0
-    ? Math.round((totalSolved / totalProblems) * 100)
+    ? Math.round((totalSolvedForTrack / totalProblems) * 100)
     : 0;
 
   return (
     <div className="w-full max-w-5xl mx-auto space-y-6">
 
+      {/* ── Track Switcher UI ─────────────────────────────────────────── */}
+      <div className="flex bg-zinc-900 p-1.5 rounded-2xl border border-zinc-800 w-fit mx-auto mb-8 relative">
+        <button
+          onClick={() => setActiveTrack("DSA")}
+          className={`relative z-10 flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-bold transition-all duration-300 ${
+            activeTrack === "DSA" ? "text-emerald-950" : "text-zinc-400 hover:text-zinc-200"
+          }`}
+        >
+          <Code2 className="w-4 h-4" />
+          DSA Mastery
+        </button>
+        <button
+          onClick={() => setActiveTrack("SQL")}
+          className={`relative z-10 flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-bold transition-all duration-300 ${
+            activeTrack === "SQL" ? "text-blue-950" : "text-zinc-400 hover:text-zinc-200"
+          }`}
+        >
+          <Database className="w-4 h-4" />
+          SQL Mastery
+        </button>
+        
+        {/* Animated Background Pill */}
+        <div 
+          className={`absolute top-1.5 bottom-1.5 w-[calc(50%-6px)] rounded-xl transition-all duration-300 ease-out ${
+            activeTrack === "DSA" 
+              ? "left-1.5 bg-emerald-500 shadow-[0_0_20px_-5px_rgba(16,185,129,0.5)]" 
+              : "left-[calc(50%+1.5px)] bg-blue-500 shadow-[0_0_20px_-5px_rgba(59,130,246,0.5)]"
+          }`}
+        />
+      </div>
+
       {/* ── Overall Progress Dashboard ──────────────────────────────────── */}
       <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-6">
         <div className="flex flex-col lg:flex-row gap-8">
-
-          {/* Circular ring + count */}
           <div className="flex flex-col items-center justify-center gap-2 lg:pr-8 lg:border-r lg:border-zinc-800">
             <div className="relative">
-              <CircularProgress pct={overallPct} />
+              <CircularProgress pct={overallPct} track={activeTrack} />
               <div className="absolute inset-0 flex flex-col items-center justify-center">
                 <span className="text-3xl font-black text-zinc-100">{overallPct}%</span>
                 <span className="text-xs text-zinc-500 mt-0.5">complete</span>
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <Trophy className="h-4 w-4 text-amber-400" />
+              <Trophy className={`h-4 w-4 ${activeTrack === "DSA" ? "text-amber-400" : "text-blue-400"}`} />
               <span className="text-sm font-semibold text-zinc-200">
-                {totalSolved}
+                {totalSolvedForTrack}
                 <span className="text-zinc-500 font-normal"> / {totalProblems} solved</span>
               </span>
             </div>
           </div>
 
-          {/* Per-topic mini bars */}
           <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-x-8 gap-y-3">
             {topicStats.map((t) => (
-              <TopicBar key={t.id} title={t.title} solved={t.solved} total={t.total} />
+              <TopicBar key={t.id} title={t.title} solved={t.solved} total={t.total} track={activeTrack} />
             ))}
           </div>
         </div>
@@ -218,8 +280,6 @@ export default function ProblemList({ userId, initialCompletedIds = [] }: Proble
 
       {/* ── Filter Controls ─────────────────────────────────────────────── */}
       <div className="flex flex-wrap gap-3 items-center">
-
-        {/* Status filter */}
         <div className="flex items-center rounded-xl border border-zinc-800 bg-zinc-900 p-1 gap-1">
           {(["All", "Solved", "Unsolved"] as StatusFilter[]).map((s) => (
             <button
@@ -227,7 +287,7 @@ export default function ProblemList({ userId, initialCompletedIds = [] }: Proble
               onClick={() => setStatusFilter(s)}
               className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-all duration-150 ${
                 statusFilter === s
-                  ? "bg-emerald-600 text-white shadow"
+                  ? activeTrack === "DSA" ? "bg-emerald-600 text-white shadow" : "bg-blue-600 text-white shadow"
                   : "text-zinc-400 hover:text-zinc-200"
               }`}
             >
@@ -236,35 +296,36 @@ export default function ProblemList({ userId, initialCompletedIds = [] }: Proble
           ))}
         </div>
 
-        {/* Difficulty filter */}
         <div className="flex items-center rounded-xl border border-zinc-800 bg-zinc-900 p-1 gap-1">
-          {(["All", "Easy", "Medium", "Hard"] as DifficultyFilter[]).map((d) => (
-            <button
-              key={d}
-              onClick={() => setDiffFilter(d)}
-              className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-all duration-150 ${
-                diffFilter === d
-                  ? d === "Easy"
-                    ? "bg-emerald-700 text-white shadow"
-                    : d === "Medium"
-                    ? "bg-amber-600 text-white shadow"
-                    : d === "Hard"
-                    ? "bg-rose-700 text-white shadow"
-                    : "bg-emerald-600 text-white shadow"
-                  : "text-zinc-400 hover:text-zinc-200"
-              }`}
-            >
-              {d}
-            </button>
-          ))}
+          {(["All", "Easy", "Medium", "Hard"] as DifficultyFilter[]).map((d) => {
+            let activeBg = "bg-zinc-600";
+            if (activeTrack === "DSA") {
+              activeBg = d === "Easy" ? "bg-emerald-700" : d === "Medium" ? "bg-amber-600" : d === "Hard" ? "bg-rose-700" : "bg-emerald-600";
+            } else {
+              activeBg = d === "Easy" ? "bg-cyan-700" : d === "Medium" ? "bg-blue-600" : d === "Hard" ? "bg-indigo-700" : "bg-blue-600";
+            }
+
+            return (
+              <button
+                key={d}
+                onClick={() => setDiffFilter(d)}
+                className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-all duration-150 ${
+                  diffFilter === d
+                    ? `${activeBg} text-white shadow`
+                    : "text-zinc-400 hover:text-zinc-200"
+                }`}
+              >
+                {d}
+              </button>
+            )
+          })}
         </div>
 
-        {/* Topic dropdown */}
         <div className="relative">
           <select
             value={topicFilter}
             onChange={(e) => setTopicFilter(e.target.value)}
-            className="appearance-none rounded-xl border border-zinc-800 bg-zinc-900 pl-4 pr-10 py-2.5 text-sm text-zinc-300 cursor-pointer hover:border-zinc-600 focus:outline-none focus:ring-1 focus:ring-emerald-500/50 transition-colors"
+            className="appearance-none rounded-xl border border-zinc-800 bg-zinc-900 pl-4 pr-10 py-2.5 text-sm text-zinc-300 cursor-pointer hover:border-zinc-600 focus:outline-none focus:ring-1 focus:ring-emerald-500/50 transition-colors max-w-[200px] truncate"
           >
             {ALL_TOPICS.map((t) => (
               <option key={t} value={t} className="bg-zinc-900">
@@ -275,7 +336,6 @@ export default function ProblemList({ userId, initialCompletedIds = [] }: Proble
           <ChevronDown className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500" />
         </div>
 
-        {/* Must-Do Only toggle */}
         <button
           onClick={() => setMustDoOnly((v) => !v)}
           className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl border text-sm font-semibold transition-all duration-200 ${
@@ -288,7 +348,6 @@ export default function ProblemList({ userId, initialCompletedIds = [] }: Proble
           Must-Do Only
         </button>
 
-        {/* Active filter count badge */}
         {(statusFilter !== "All" || diffFilter !== "All" || topicFilter !== "All Topics" || mustDoOnly) && (
           <button
             onClick={() => { setStatusFilter("All"); setDiffFilter("All"); setTopicFilter("All Topics"); setMustDoOnly(false); }}
@@ -312,17 +371,20 @@ export default function ProblemList({ userId, initialCompletedIds = [] }: Proble
             const moduleSolved = module.problems.filter((p) => completed.has(p.id)).length;
             const moduleTotal  = module.problems.length;
             const modulePct    = moduleTotal > 0 ? Math.round((moduleSolved / moduleTotal) * 100) : 0;
+            
+            const pBarGradient = activeTrack === "DSA" 
+              ? "bg-gradient-to-r from-emerald-500 to-teal-500" 
+              : "bg-gradient-to-r from-blue-500 to-indigo-500";
 
             return (
               <div key={module.id} className="rounded-2xl border border-zinc-800 bg-zinc-900/40 overflow-hidden">
-                {/* Module header */}
                 <div className="px-5 py-4 border-b border-zinc-800/70 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-zinc-900/60">
                   <h2 className="text-base font-bold text-zinc-100">{module.title}</h2>
                   <div className="flex items-center gap-3 flex-shrink-0">
                     <span className="text-xs font-mono text-zinc-500">{moduleSolved}/{moduleTotal}</span>
                     <div className="w-28 h-2 rounded-full bg-zinc-800 overflow-hidden">
                       <div
-                        className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 transition-all duration-500"
+                        className={`h-full rounded-full ${pBarGradient} transition-all duration-500`}
                         style={{ width: `${modulePct}%` }}
                       />
                     </div>
@@ -330,7 +392,6 @@ export default function ProblemList({ userId, initialCompletedIds = [] }: Proble
                   </div>
                 </div>
 
-                {/* Problems rows */}
                 <div className="divide-y divide-zinc-800/40">
                   {module.problems.map((problem) => {
                     const isSolved = completed.has(problem.id);
@@ -341,7 +402,6 @@ export default function ProblemList({ userId, initialCompletedIds = [] }: Proble
                           isSolved ? "opacity-60" : ""
                         }`}
                       >
-                        {/* Left: checkbox + name */}
                         <div className="flex items-center gap-4 min-w-0">
                           <Checkbox
                             id={`cb-${problem.id}`}
@@ -364,7 +424,6 @@ export default function ProblemList({ userId, initialCompletedIds = [] }: Proble
                           </label>
                         </div>
 
-                        {/* Right: difficulty + solve link */}
                         <div className="flex items-center gap-3 flex-shrink-0">
                           <span className={`inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-semibold ${DIFFICULTY_STYLES[problem.difficulty]}`}>
                             {problem.difficulty}
