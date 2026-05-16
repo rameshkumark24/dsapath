@@ -11,6 +11,7 @@ import {
   Coffee,
   Code2,
   CheckCircle2,
+  Briefcase // Added for the Project icon
 } from "lucide-react";
 
 // ── YouTube brand icon ─────────────────────────────────────────────────────
@@ -27,7 +28,7 @@ const checklistSections = [
     number: "01",
     title: "The Perfect Self-Introduction",
     color: "emerald",
-    videoId: "O6RqAzIQXSE", // Added the YouTube video ID here
+    videoId: "O6RqAzIQXSE", 
     bullets: [
       "Keep it under 60 seconds — any longer and you've lost them.",
       "State your primary stack (Java / React) confidently, not apologetically.",
@@ -37,10 +38,25 @@ const checklistSections = [
     ],
   },
   {
-    icon: Box,
+    icon: Briefcase,
     number: "02",
-    title: "OOPs Principles",
+    title: "The PTR Project Formula",
     color: "indigo",
+    videoId: "gza8TXKcNlo", 
+    bullets: [
+      "Problem: Clearly state the exact real-world issue your project aimed to solve.",
+      "Tech Stack: Highlight the core technologies used (e.g., Next.js, Supabase) and why you chose them.",
+      "Result: Focus on the tangible impact, metrics, or final learning outcome.",
+      "Keep it crisp — treat it as a 30-second elevator pitch for your codebase.",
+      "Never dive into deep technical code unless the interviewer explicitly asks.",
+    ],
+  },
+  {
+    icon: Box,
+    number: "03",
+    title: "OOPs Principles",
+    color: "teal",
+    videoId: "bMKt-xgGOjk", 
     bullets: [
       "Abstraction: Hide complexity (e.g., ATM — you use it, not build it).",
       "Encapsulation: Bundle data & methods (e.g., Bank Account with private balance).",
@@ -51,9 +67,9 @@ const checklistSections = [
   },
   {
     icon: Database,
-    number: "03",
+    number: "04",
     title: "Java Collections Framework",
-    color: "teal",
+    color: "amber",
     bullets: [
       "HashMap: O(1) ops, not thread-safe, allows one null key.",
       "ConcurrentHashMap: Thread-safe, no null keys/values.",
@@ -64,9 +80,9 @@ const checklistSections = [
   },
   {
     icon: Coffee,
-    number: "04",
+    number: "05",
     title: "Core Java Must-Knows",
-    color: "amber",
+    color: "rose",
     bullets: [
       "String is immutable. Use StringBuilder in loops.",
       "Thread lifecycle: New → Runnable → Running → Blocked → Dead.",
@@ -77,9 +93,9 @@ const checklistSections = [
   },
   {
     icon: Code2,
-    number: "05",
+    number: "06",
     title: "High-Yield DSA Patterns",
-    color: "rose",
+    color: "emerald",
     bullets: [
       "Two Pointers: Converging on sorted arrays; fast+slow for cycle detection.",
       "Sliding Window: Expand right, shrink left on constraint violation.",
