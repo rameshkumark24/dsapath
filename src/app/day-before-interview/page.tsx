@@ -11,7 +11,7 @@ import {
   Coffee,
   Code2,
   CheckCircle2,
-  Briefcase // Added for the Project icon
+  Briefcase
 } from "lucide-react";
 
 // ── YouTube brand icon ─────────────────────────────────────────────────────
@@ -70,38 +70,13 @@ const checklistSections = [
     number: "04",
     title: "Java Collections Framework",
     color: "amber",
+    videoId: "s1A40oczbNc", // <-- New Video Added Here
     bullets: [
       "HashMap: O(1) ops, not thread-safe, allows one null key.",
       "ConcurrentHashMap: Thread-safe, no null keys/values.",
       "ArrayList: Fast random access O(1). LinkedList: Fast insert/delete at ends.",
       "HashSet / LinkedHashSet / TreeSet: Unique → ordered → sorted.",
       "PriorityQueue: Min-heap default. Reverse for max-heap.",
-    ],
-  },
-  {
-    icon: Coffee,
-    number: "05",
-    title: "Core Java Must-Knows",
-    color: "rose",
-    bullets: [
-      "String is immutable. Use StringBuilder in loops.",
-      "Thread lifecycle: New → Runnable → Running → Blocked → Dead.",
-      "GC is automatic. Objects eligible when no live references remain.",
-      "== compares references. equals() compares content (if overridden).",
-      "final (immutability) / finally (always runs) / finalize (deprecated).",
-    ],
-  },
-  {
-    icon: Code2,
-    number: "06",
-    title: "High-Yield DSA Patterns",
-    color: "emerald",
-    bullets: [
-      "Two Pointers: Converging on sorted arrays; fast+slow for cycle detection.",
-      "Sliding Window: Expand right, shrink left on constraint violation.",
-      "BFS: Level-order traversal & shortest path (unweighted). Queue-based.",
-      "DFS: Deep traversal for connected components & paths. Stack/recursion.",
-      "Binary Search on Answers: Monotonic space + feasibility check = binary search.",
     ],
   },
 ];
